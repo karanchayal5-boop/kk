@@ -29,7 +29,7 @@ class _Screen1State extends State<Screen1> {
                   left: 0,
                   child: Image.asset(
                     'assets/images/image.png',
-                    height: 550,
+                    height: MediaQuery.of(context).size.width * 1.37,
                     fit: BoxFit.contain,
                   ),
                 ),
