@@ -52,7 +52,7 @@ class _Screen1State extends State<Screen1> {
                   right: _isMoved ? -180 : -700, 
                   bottom: 120, 
                   child: Image.asset(
-                    'assets/images/Group 3@3x.png', 
+                    'assets/images/car.png', 
                     width: 480,
                     fit: BoxFit.contain,
                   ),

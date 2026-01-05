@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// 1. StatefulWidget banayein taaki error state change ho sake
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -9,7 +9,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // 2. Variable jo track karega ki error dikhana hai ya nahi
+  
   bool isPasswordWrong = false;
 
   @override
@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 30),
 
-                // 3. ERROR MESSAGE LOGIC
+                
                 if (isPasswordWrong)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 15),
@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            // Password reset logic
+                            
                           },
                           child: const Text(
                             "Reset your password.",
@@ -77,13 +77,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 _buildTextField('Password'),
                 const SizedBox(height: 30),
 
-                // 4. LOGIN BUTTON CLICK LOGIC
+                
                 SizedBox(
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Testing ke liye: Button dabate hi error dikhega
                       setState(() {
                         isPasswordWrong = true;
                       });
@@ -101,8 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                
-                // Baaki ka code (Create account aur Terms) same rahega...
+
                 Center(
                   child: Column(
                     children: [
@@ -148,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       child: TextField(
         onChanged: (value) {
-          // Jab user type karna shuru kare, error hata dein
+          
           if (isPasswordWrong) {
             setState(() {
               isPasswordWrong = false;

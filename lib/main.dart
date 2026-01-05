@@ -27,6 +27,7 @@ class SplashScreen extends StatefulWidget {
 
   @override
  
+  
   _SplashScreenState createState() => _SplashScreenState();
 }
 
@@ -37,7 +38,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     
-    Timer(Duration(seconds: 1), () => Get.offNamed('/screen1'));
+    Future.delayed(Duration(seconds: 1), () {
+      if (Get.currentRoute == '/splash') {
+         Get.offNamed('/screen1');
+      }
+  });
   }
 
   @override
