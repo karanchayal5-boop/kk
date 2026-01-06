@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart' show Get;
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:kk/screen/register_screen.dart';
 
 
 class LoginScreen extends StatefulWidget {
@@ -106,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       const Text("Don’t have an account?"),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () => Get.to(() => const RegisterScreen()),
                         child: const Text(
                           'Create new account.',
                           style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),

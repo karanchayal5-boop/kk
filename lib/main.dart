@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:kk/screen/login_screen.dart';
+import 'package:kk/screen/register_screen.dart';
 import 'dart:async';
 
 import 'package:kk/screen/screen1.dart';
@@ -12,11 +13,12 @@ void main() {
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/screen1',
+      initialRoute: '/splash',
       getPages: [
         GetPage(name: '/splash', page: () => SplashScreen()),
         GetPage(name: '/screen1', page: () => Screen1()),
         GetPage(name: '/login', page: () => LoginScreen()),
+        GetPage(name: '/register', page: () => RegisterScreen()),
          ],
     ),
   );
