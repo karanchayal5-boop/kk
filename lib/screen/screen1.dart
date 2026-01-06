@@ -114,12 +114,12 @@ class _Screen1State extends State<Screen1> {
                             color: Colors.orange,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.arrow_forward, color: Colors.white),
+                          child: const Icon(Icons.skip_next, color: Colors.white),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 50),
                 ],
               ),
             ),
@@ -132,8 +132,8 @@ class _Screen1State extends State<Screen1> {
   Widget _buildIndicator(bool isActive) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      width: isActive ? 25 : 15,
-      height: 4,
+      width: isActive ? 40 : 10,
+      height: 5,
       decoration: BoxDecoration(
         color: isActive ? Colors.orange : Colors.grey[300],
         borderRadius: BorderRadius.circular(2),
