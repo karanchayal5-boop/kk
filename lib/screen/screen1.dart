@@ -136,8 +136,8 @@ class _Screen1State extends State<Screen1> {
                             if (!_isMoved) {
                               _isMoved = true;
                             } else {
-                              print("Na");
-                              Get.offNamed('/login');
+                              
+                              Get.toNamed('/login');
                             }
                           });
                         },

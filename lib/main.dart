@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:kk/screen/login_screen.dart';
-import 'package:kk/screen/register_screen.dart';
+import 'package:kk/login/OTP_verification_screen.dart';
+import 'package:kk/login/create_password_screen.dart';
+import 'package:kk/login/login_screen.dart';
+import 'package:kk/login/register_screen.dart';
 import 'dart:async';
 
 import 'package:kk/screen/screen1.dart';
@@ -19,6 +21,8 @@ void main() {
         GetPage(name: '/screen1', page: () => Screen1()),
         GetPage(name: '/login', page: () => LoginScreen()),
         GetPage(name: '/register', page: () => RegisterScreen()),
+        GetPage(name: '/otp', page: () => OtpVerificationScreen()),
+        GetPage(name: '/createpassword', page: () => CreatePasswordScreen()),
          ],
     ),
   );
@@ -42,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
     
     Future.delayed(Duration(seconds: 3), () {
       if (Get.currentRoute == '/splash') {
-         Get.offNamed('/screen1');
+         Get.toNamed('/screen1');
       }
   });
   }

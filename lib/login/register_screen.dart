@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:kk/login/OTP_verification_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -24,7 +25,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             right: 0,
             child: Image.asset(
               'assets/images/login.png', 
-              height: 200,
+              height: 120,
               fit: BoxFit.contain,
             ),
           ),
@@ -40,9 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(color: Colors.black12, blurRadius: 10)
-                  ],
+                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
                 ),
                 child: const Icon(Icons.arrow_back_ios_new, size: 20, color: Colors.black),
               ),
@@ -116,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     width: double.infinity,
                     height: 55,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => Get.to(() => const OtpVerificationScreen()),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF1A1A1A),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
