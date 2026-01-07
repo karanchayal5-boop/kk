@@ -25,7 +25,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
             right: 0,
             child: Image.asset(
               'assets/images/login.png', 
-              height: 200,
+              height: 120,
               fit: BoxFit.contain,
             ),
           ),

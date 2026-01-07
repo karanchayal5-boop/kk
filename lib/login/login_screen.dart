@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart' show Get;
 import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:kk/login/forget_password_screen.dart';
 import 'package:kk/login/register_screen.dart';
 
 
@@ -59,9 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextStyle(color: Colors.black, fontSize: 14),
                         ),
                         GestureDetector(
-                          onTap: () {
-                            
-                          },
+                          onTap: () => Get.to(() => const ForgotPasswordScreen()),
                           child: const Text(
                             "Reset your password.",
                             style: TextStyle(

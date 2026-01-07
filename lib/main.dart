@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:kk/login/OTP_verification_screen.dart';
 import 'package:kk/login/create_password_screen.dart';
+import 'package:kk/login/forget_password_screen.dart';
 import 'package:kk/login/login_screen.dart';
 import 'package:kk/login/register_screen.dart';
 import 'dart:async';
@@ -15,7 +16,7 @@ void main() {
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/splash',
+      initialRoute: '/login',
       getPages: [
         GetPage(name: '/splash', page: () => SplashScreen()),
         GetPage(name: '/screen1', page: () => Screen1()),
@@ -23,6 +24,7 @@ void main() {
         GetPage(name: '/register', page: () => RegisterScreen()),
         GetPage(name: '/otp', page: () => OtpVerificationScreen()),
         GetPage(name: '/createpassword', page: () => CreatePasswordScreen()),
+        GetPage(name: '/forget', page: () => ForgotPasswordScreen()),
          ],
     ),
   );
