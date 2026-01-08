@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart' show Get;
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:kk/login/forget_password_screen.dart';
+import 'package:kk/login/map_screen.dart';
 import 'package:kk/login/register_screen.dart';
 
 
@@ -84,11 +85,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        isPasswordWrong = true;
-                      });
-                    },
+                    
+                      onPressed: () => Get.to(() => MyAppleMap()),
+                    
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A1A1A),
                       shape: RoundedRectangleBorder(

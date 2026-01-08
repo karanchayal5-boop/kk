@@ -5,9 +5,9 @@ import 'package:kk/login/OTP_verification_screen.dart';
 import 'package:kk/login/create_password_screen.dart';
 import 'package:kk/login/forget_password_screen.dart';
 import 'package:kk/login/login_screen.dart';
+import 'package:kk/login/map_screen.dart';
 import 'package:kk/login/register_screen.dart';
 import 'dart:async';
-
 import 'package:kk/screen/screen1.dart';
 
 void main() {
@@ -25,6 +25,7 @@ void main() {
         GetPage(name: '/otp', page: () => OtpVerificationScreen()),
         GetPage(name: '/createpassword', page: () => CreatePasswordScreen()),
         GetPage(name: '/forget', page: () => ForgotPasswordScreen()),
+        GetPage(name: '/map', page: () => MyAppleMap()),
          ],
     ),
   );
