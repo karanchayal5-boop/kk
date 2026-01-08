@@ -72,9 +72,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     _otpBox(first: false, last: true),
                   ],
                 ),
+
                 const SizedBox(height: 40),
 
-                
                 SizedBox(
                   width: double.infinity,
                   height: 55,
@@ -89,8 +89,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   ),
                 ),
                 const Spacer(),
-
-                
                 Center(
                   child: Column(
                     children: [
@@ -123,7 +121,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 5)),
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10,
+          offset: const Offset(0, 5)),
         ],
       ),
       child: TextField(

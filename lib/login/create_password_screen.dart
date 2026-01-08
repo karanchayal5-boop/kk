@@ -67,7 +67,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       
-                      Get.toNamed('/home'); 
+                      Get.toNamed('login'); 
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A1A1A),

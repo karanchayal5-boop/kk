@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kk/login/OTP_verification_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -100,10 +101,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   
                   child: ElevatedButton(
                     onPressed: () {
-                     
-                      print("Reset link sent to: ${_emailController.text}");
-                      
-                    },
+                      String email = _emailController.text;
+                      bool isEmailValid = GetUtils.isEmail(email); 
+
+                       if (isEmailValid) {
+    
+                        Get.to(() => const OtpVerificationScreen());
+                    } else {
+    
+                      Get.snackbar("Invalid Email", "Please enter a valid email address",
+                      snackPosition: SnackPosition.BOTTOM);
+                       }
+                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A1A1A),
                       shape: RoundedRectangleBorder(
