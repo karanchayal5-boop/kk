@@ -5,7 +5,7 @@ import 'package:kk/login/OTP_verification_screen.dart';
 import 'package:kk/login/create_password_screen.dart';
 import 'package:kk/login/forget_password_screen.dart';
 import 'package:kk/login/login_screen.dart';
-import 'package:kk/login/map_screen.dart';
+import 'package:kk/home/map_screen.dart';
 import 'package:kk/login/register_screen.dart';
 import 'dart:async';
 import 'package:kk/screen/screen1.dart';
@@ -16,7 +16,7 @@ void main() {
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/splash',
+      initialRoute: '/map',
       getPages: [
         GetPage(name: '/splash', page: () => SplashScreen()),
         GetPage(name: '/screen1', page: () => Screen1()),
