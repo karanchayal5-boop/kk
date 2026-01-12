@@ -1,6 +1,8 @@
+import 'package:apple_maps_flutter/apple_maps_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/route_manager.dart';
 import 'package:kk/controller/taxi_controller.dart';
 
 class SearchDestinationScreen extends StatefulWidget {
@@ -11,16 +13,29 @@ class SearchDestinationScreen extends StatefulWidget {
 }
 
 class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
+  List<Map<String, dynamic>> _locations = [];
+  final TaxiController taxiController = Get.put(TaxiController());
   final TextEditingController _pickupController = TextEditingController(text: "Current location");
   final TextEditingController _dropController = TextEditingController();
 
- 
-  final List<String> _suggestions = [
-    "Radan Ropal Road",
-    "Railway Staion",
-    "Fazilka, Punjab, India",
-    "Chandigarh, India"
-  ];
+  void _onSearchChanged(String query) async {
+  if (query.isEmpty) return;
+
+  try {
+    
+    List<Location> locations = await locationFromAddress(query);
+    
+    setState(() {
+      _locations = locations.map((loc) => {
+        "name": query, 
+        "lat": loc.latitude,
+        "lng": loc.longitude,
+      }).toList();
+    });
+  } catch (e) {
+    print("Error finding place: $e");
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +115,10 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
                         child: TextField(
                           controller: _dropController,
                           autofocus: true,
+                          // ignore: non_constant_identifier_names
+                          onChanged: (Value){
+                            _onSearchChanged(Value);
+                          },
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "Drope off",
@@ -119,19 +138,31 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
             Expanded(
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                itemCount: _suggestions.length,
+                itemCount: _locations.length,
                 separatorBuilder: (context, index) => Divider(color: Colors.grey[200]),
                 itemBuilder: (context, index) {
+
+                  final selected = _locations[index];
+
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: const Icon(Icons.location_on, color: Colors.grey),
                     title: Text(
-                      _suggestions[index],
+                      selected['name'],
                       style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                     onTap: () {
-                      
-                      Get.find<TaxiController>().destinationDone("Fazilka");
+                      final selected =_locations[index];
+                      double latitude = selected['lat']?.toDouble()?? 0.0;
+                      double longitude = selected['lng']?.toDouble()?? 0.0;
+
+                      taxiController.destinationDone(
+                        selected['name'] ?? "unknown",
+                        LatLng(latitude, longitude)
+                      ); 
+                     
+                      Get.back();
+
                     },
                   );
                 },
