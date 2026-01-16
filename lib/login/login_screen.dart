@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart' show Get;
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:kk/login/forget_password_screen.dart';
-import 'package:kk/home/map_screen.dart';
+import 'package:kk/map_screen.dart';
 import 'package:kk/login/register_screen.dart';
 
 

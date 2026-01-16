@@ -1,0 +1,175 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kk/controller/taxi_controller.dart';
+
+class PaymentMethodPage extends StatelessWidget {
+  PaymentMethodPage({super.key});
+
+  final TaxiController taxiController = Get.put(TaxiController());
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: Padding(
+  padding: const EdgeInsets.only(left: 12),
+  child: InkWell(
+    onTap: () => Get.back(),
+    child: Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: const Icon(
+        Icons.arrow_back,
+        color: Colors.black,
+        size: 22,
+      ),
+    ),
+  ),
+),
+        title: const Text(
+          "Payment method",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
+
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(20),
+              children: [
+
+                // ================= PERSONAL =================
+                Row(
+                  children: const [
+                    Icon(Icons.person, color: Colors.grey),
+                    SizedBox(width: 8),
+                    Text("Personal", style: TextStyle(color: Colors.grey)),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                _cardTile("xxxx xxxx 4793", 0, Colors.blue),
+                const Divider(),
+                _cardTile("xxxx xxxx 3525", 1, Colors.blue),
+
+                const SizedBox(height: 10),
+
+                _addTile("Add personal card"),
+
+                const SizedBox(height: 25),
+
+                // ================= BUSINESS =================
+                Row(
+                  children: const [
+                    Icon(Icons.work, color: Colors.grey),
+                    SizedBox(width: 8),
+                    Text("Business", style: TextStyle(color: Colors.grey)),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                _cardTile("xxxx xxxx 4793", 2, Colors.orange),
+
+                const SizedBox(height: 10),
+
+                _addTile("Add business card"),
+
+                const SizedBox(height: 25),
+
+                // ================= PROMO =================
+                Row(
+                  children: const [
+                    Icon(Icons.card_giftcard, color: Colors.grey),
+                    SizedBox(width: 8),
+                    Text("Promo code", style: TextStyle(color: Colors.grey)),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                _addTile("Add promo code"),
+              ],
+            ),
+          ),
+
+          // ================= SAVE BUTTON =================
+          Padding(
+            padding: const EdgeInsets.all(70
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+                onPressed: () {
+                  Get.back();
+                },
+                child: const Text(
+                  "Save",
+                  style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ),
+        ],
+        
+      ),
+    );
+  }
+
+  // ================= CARD TILE =================
+
+  Widget _cardTile(String text, int index, Color iconColor) {
+    return Obx(() {
+      bool selected = taxiController.selectedPaymentIndex.value == index;
+
+      return ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: Icon(Icons.credit_card, color: iconColor),
+        title: Text(text, style: const TextStyle(fontSize: 16)),
+        trailing: selected
+            ? const Icon(Icons.check, color: Colors.orange, size: 22)
+            : null,
+        onTap: () {
+          taxiController.selectedPaymentIndex.value = index;
+          taxiController.selectedCardText.value = text;
+        },
+      );
+    });
+  }
+
+  // ================= ADD TILE =================
+
+  Widget _addTile(String title) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: const Icon(Icons.add, color: Colors.black),
+      title: Text(title),
+      onTap: () {},
+    );
+  }
+}

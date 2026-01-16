@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:kk/home/payment_method_page.dart';
 import 'package:kk/login/OTP_verification_screen.dart';
 import 'package:kk/login/create_password_screen.dart';
 import 'package:kk/login/forget_password_screen.dart';
 import 'package:kk/login/login_screen.dart';
-import 'package:kk/home/map_screen.dart';
+import 'package:kk/map_screen.dart';
 import 'package:kk/login/register_screen.dart';
 import 'dart:async';
 import 'package:kk/screen/screen1.dart';
@@ -26,6 +27,7 @@ void main() {
         GetPage(name: '/createpassword', page: () => CreatePasswordScreen()),
         GetPage(name: '/forget', page: () => ForgotPasswordScreen()),
         GetPage(name: '/map', page: () => MyAppleMap()),
+        GetPage(name: '/payment', page: () => PaymentMethodPage()),
          ],
     ),
   );
