@@ -4,14 +4,13 @@ import 'package:apple_maps_flutter/apple_maps_flutter.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:kk/controller/taxi_controller.dart';
+import 'package:kk/home/driver_arriving_sheet.dart';
 import 'package:kk/home/finding_driver_sheet.dart';
 import 'package:kk/home/initial_search_sheet.dart';
 import 'package:kk/home/notes_for_driver_sheet.dart';
 import 'package:kk/home/vehicle_selection_sheet.dart';
 import 'package:kk/home/custom_menu_button.dart';
 import 'package:kk/home/side_menu_page.dart';
-
-
 
 class MyAppleMap extends StatefulWidget {
   const MyAppleMap({super.key});
@@ -142,7 +141,7 @@ class _MyAppleMapState extends State<MyAppleMap> with SingleTickerProviderStateM
       ),
     };
   }
-
+  
   void _updateTaxiCircles() {
     if (taxiController.isDestinationSelected.value) {
       _circles = {};
@@ -160,9 +159,7 @@ class _MyAppleMapState extends State<MyAppleMap> with SingleTickerProviderStateM
     };
   }
 
-  // =========================
-  // ✅ DISTANCE + TIME
-  // =========================
+ 
   void calculateDistanceAndTime(LatLng start, LatLng end) {
     double meters = Geolocator.distanceBetween(
       start.latitude,
@@ -231,16 +228,18 @@ class _MyAppleMapState extends State<MyAppleMap> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      resizeToAvoidBottomInset: false,
       drawer: const Drawer(child: Center(child: Text("Menu"))),
       body: Stack(
         children: [
-          AppleMap(
-            onMapCreated: (controller) => mapController = controller,
-            initialCameraPosition: CameraPosition(target: _currentLocation, zoom: 15),
-            annotations: _annotations,
-            polylines: _polylines,
+          Positioned.fill(
+            child: AppleMap(
+              onMapCreated: (controller) => mapController = controller,
+              initialCameraPosition: CameraPosition(target: _currentLocation, zoom: 15),
+              annotations: _annotations,
+              polylines: _polylines,
             circles: _circles,
-          ),
+          ),),
 
           // ROUTE AUTO DRAW
           Obx(() {
@@ -252,20 +251,22 @@ class _MyAppleMapState extends State<MyAppleMap> with SingleTickerProviderStateM
             return const SizedBox.shrink();
           }),
 
-          // BOTTOM SHEETS
+          
           Obx(() {
-            if (taxiController.isDestinationSelected.value) {
-              if (taxiController.currentStep.value == 0) {
-                return VehicleSelectionSheet();
-              } else if (taxiController.currentStep.value == 1) {
-                return NotesForDriverSheet();
-              } else {
-                return FindingDriverSheet();
-              }
-            } else {
-              return const InitialSearchSheet();
+            if (!taxiController.isDestinationSelected.value) {
+            return const InitialSearchSheet();
             }
-          }),
+                if (taxiController.currentStep.value == 0) {
+                 return VehicleSelectionSheet();
+             } else if (taxiController.currentStep.value == 1) {
+                 return NotesForDriverSheet();
+             } else if (taxiController.currentStep.value == 2) {
+                 return FindingDriverSheet();
+             } else {
+                 return const DriverArrivingSheet();
+             }
+             }),
+
 
           CustomMenuButton(
             onTap: () {
@@ -287,6 +288,7 @@ class _MyAppleMapState extends State<MyAppleMap> with SingleTickerProviderStateM
               );
             },
           ),
+          
         ],
       ),
     );

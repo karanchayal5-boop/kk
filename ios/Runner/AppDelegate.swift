@@ -42,7 +42,7 @@ import MapKit
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
-  // 🔥 REAL APPLE MAPS ROUTE ENGINE
+  
   func getAppleRoute(
     startLat: Double,
     startLng: Double,

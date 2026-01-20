@@ -2,10 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kk/controller/taxi_controller.dart';
 
-class FindingDriverSheet extends StatelessWidget {
+ class FindingDriverSheet extends StatefulWidget {
+  const FindingDriverSheet({super.key});
+
+  @override
+  State<FindingDriverSheet> createState() => _FindingDriverSheetState();
+}
+
+class _FindingDriverSheetState extends State<FindingDriverSheet> {
   final TaxiController taxiController = Get.find();
 
-  FindingDriverSheet({super.key});
+  @override
+  void initState() {
+    super.initState();
+    
+    Future.delayed(const Duration(seconds: 2), () {
+      taxiController.currentStep.value = 3;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +39,6 @@ class FindingDriverSheet extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: Container(width: 40, height: 5, color: Colors.grey[300]),
-              ),
 
               const SizedBox(height: 20),
 

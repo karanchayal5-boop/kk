@@ -14,12 +14,11 @@ class NotesForDriverSheet extends StatelessWidget {
       maxChildSize: 0.6,
       builder: (context, scrollController) {
         return Container(
-          decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+          decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(1))),
           child: ListView(
             controller: scrollController,
             padding: const EdgeInsets.all(25),
             children: [
-              Center(child: Container(width: 40, height: 5, color: Colors.grey[300])),
               const SizedBox(height: 20),
               const Text("Add notes for driver", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 15),

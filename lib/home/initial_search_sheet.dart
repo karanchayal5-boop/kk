@@ -8,8 +8,8 @@ class InitialSearchSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.15,
-      minChildSize: 0.1,
+      initialChildSize: 0.035,
+      minChildSize: 0.035,
       maxChildSize: 0.9,
       builder: (context, scrollController) {
         return Container(
@@ -18,10 +18,23 @@ class InitialSearchSheet extends StatelessWidget {
             controller: scrollController,
             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
             children: [
-              _handleBar(),
               const SizedBox(height: 15),
-              Text("Hi Karan!", style: TextStyle(color: Colors.orange[400], fontSize: 16, fontWeight: FontWeight.bold)),
-              const Text("Where do you want to go?", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87)),
+              Text(
+                "Hi Karan!",
+                style: TextStyle(
+                  color: Colors.orange[400],
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Text(
+                "Where do you want to go?",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
               const SizedBox(height: 20),
               _searchFieldTrigger(),
               const SizedBox(height: 25),
@@ -35,20 +48,29 @@ class InitialSearchSheet extends StatelessWidget {
   }
 
   // Helper Widgets
-  Widget _handleBar() => Center(child: Container(width: 40, height: 5, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10))));
-  
-  BoxDecoration _sheetDecoration() => const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(30)), boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 20)]);
+
+  BoxDecoration _sheetDecoration() => const BoxDecoration(
+    color: Color.fromARGB(255, 255, 255, 255),
+    borderRadius: BorderRadius.vertical(top: Radius.circular(1)),
+    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 20)],
+  );
 
   Widget _searchFieldTrigger() {
     return TextField(
       readOnly: true,
-      onTap: () => Get.to(() => const SearchDestinationScreen(), transition: Transition.downToUp),
+      onTap: () => Get.to(
+        () => const SearchDestinationScreen(),
+        transition: Transition.downToUp,
+      ),
       decoration: InputDecoration(
         hintText: "Search location",
         prefixIcon: const Icon(Icons.search),
         filled: true,
         fillColor: Colors.grey[100],
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide.none,
+        ),
       ),
     );
   }
@@ -56,7 +78,10 @@ class InitialSearchSheet extends StatelessWidget {
   Widget _buildLocationTile(IconData icon, String title, String sub) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: CircleAvatar(backgroundColor: Colors.grey[100], child: Icon(icon, color: Colors.grey[600], size: 20)),
+      leading: CircleAvatar(
+        backgroundColor: Colors.grey[100],
+        child: Icon(icon, color: Colors.grey[600], size: 20),
+      ),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
       subtitle: Text(sub, maxLines: 1, overflow: TextOverflow.ellipsis),
     );

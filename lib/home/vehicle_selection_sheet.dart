@@ -19,18 +19,17 @@ class VehicleSelectionSheet extends StatelessWidget {
         return Container(
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(1)),
           ),
           child: ListView(
             controller: scrollController,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             children: [
-              Center(child: Container(width: 40, height: 5, color: Colors.grey[300])),
               const SizedBox(height: 10),
 
               const Text(
                 "You will reach by 12:44 PM",
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 style: TextStyle(color: Colors.orange, fontWeight: FontWeight.w500),
               ),
 
