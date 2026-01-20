@@ -12,10 +12,9 @@ class SearchDestinationScreen extends StatefulWidget {
 
 class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
 
-  // Search result list
+  
   List<Map<String, dynamic>> _locations = [];
 
-  // Your city places database
   final List<Map<String, dynamic>> cityPlaces = [
     
   {
@@ -159,7 +158,7 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
 
   final TextEditingController _dropController = TextEditingController();
 
-  // 🔍 Local search function
+  
   void _onSearchChanged(String value) {
     if (value.isEmpty) {
       setState(() {
@@ -188,7 +187,7 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
         child: Column(
           children: [
 
-            // 🔙 Back button
+            
             Padding(
               padding: const EdgeInsets.only(left: 20, top: 10),
               child: Align(
@@ -206,7 +205,7 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
 
             const SizedBox(height: 20),
 
-            // 🔎 Search box
+           
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -217,7 +216,7 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
               child: Column(
                 children: [
 
-                  // Pickup
+                 
                   Row(
                     children: [
                       const Icon(Icons.circle,
@@ -239,7 +238,7 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
                     ],
                   ),
 
-                  // Divider
+                  
                   Row(
                     children: [
                       Padding(
@@ -255,7 +254,7 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
                     ],
                   ),
 
-                  // Drop
+                  
                   Row(
                     children: [
                       const Icon(Icons.square,
@@ -284,7 +283,7 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
 
             const SizedBox(height: 30),
 
-            // 📋 Suggestions list
+           
             Expanded(
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 20),

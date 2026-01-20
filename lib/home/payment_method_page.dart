@@ -55,7 +55,6 @@ class PaymentMethodPage extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               children: [
 
-                // ================= PERSONAL =================
                 Row(
                   children: const [
                     Icon(Icons.person, color: Colors.grey),
@@ -76,7 +75,7 @@ class PaymentMethodPage extends StatelessWidget {
 
                 const SizedBox(height: 25),
 
-                // ================= BUSINESS =================
+                
                 Row(
                   children: const [
                     Icon(Icons.work, color: Colors.grey),
@@ -95,7 +94,7 @@ class PaymentMethodPage extends StatelessWidget {
 
                 const SizedBox(height: 25),
 
-                // ================= PROMO =================
+               
                 Row(
                   children: const [
                     Icon(Icons.card_giftcard, color: Colors.grey),
@@ -111,7 +110,7 @@ class PaymentMethodPage extends StatelessWidget {
             ),
           ),
 
-          // ================= SAVE BUTTON =================
+          
           Padding(
             padding: const EdgeInsets.all(70
             ),
@@ -141,7 +140,7 @@ class PaymentMethodPage extends StatelessWidget {
     );
   }
 
-  // ================= CARD TILE =================
+  
 
   Widget _cardTile(String text, int index, Color iconColor) {
     return Obx(() {
@@ -162,7 +161,7 @@ class PaymentMethodPage extends StatelessWidget {
     });
   }
 
-  // ================= ADD TILE =================
+ 
 
   Widget _addTile(String title) {
     return ListTile(

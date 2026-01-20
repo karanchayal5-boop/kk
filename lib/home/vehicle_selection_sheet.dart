@@ -64,7 +64,7 @@ class VehicleSelectionSheet extends StatelessWidget {
     );
   }
 
-  // ================= VEHICLE CARD =================
+  
 
   Widget _vehicleCard(String title, String subtitle, String price, int index, String imagepath) {
     return Obx(() {
@@ -124,7 +124,7 @@ class VehicleSelectionSheet extends StatelessWidget {
     });
   }
 
-  // ================= PAYMENT ROW =================
+  
 
   Widget _buildPaymentInfo(BuildContext context) {
   return Column(
@@ -186,7 +186,7 @@ class VehicleSelectionSheet extends StatelessWidget {
 }
 
 
-  // ================= iOS SCHEDULE PICKER =================
+  
 
   void showIOSSchedulePicker(BuildContext context) {
     DateTime tempDate = taxiController.scheduledDateTime.value.isAfter(DateTime.now())
@@ -263,7 +263,7 @@ class VehicleSelectionSheet extends StatelessWidget {
     );
   }
 
-  // ================= HELPERS =================
+  
 
   static String _formatDate(DateTime dt) {
     const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];

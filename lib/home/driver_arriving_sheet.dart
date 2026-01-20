@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kk/controller/taxi_controller.dart';
+import 'package:kk/home/trip_complete_sheet.dart';
 
 class DriverArrivingSheet extends StatelessWidget {
   const DriverArrivingSheet({super.key});
@@ -9,7 +10,9 @@ class DriverArrivingSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final TaxiController taxiController = Get.find();
 
-    return Stack(
+    return Material(
+      color: Colors.transparent,
+      child: Stack(
       children: [
         Positioned(
           bottom: MediaQuery.of(context).size.height * 0.44,
@@ -46,7 +49,7 @@ class DriverArrivingSheet extends StatelessWidget {
           ),
         ),
 
-        /// ================= BOTTOM SHEET =================
+       
         DraggableScrollableSheet(
           initialChildSize: 0.42,
           minChildSize: 0.42,
@@ -64,8 +67,9 @@ class DriverArrivingSheet extends StatelessWidget {
                 children: [
                   const SizedBox(height: 18),
 
-                  /// ================= DRIVER INFO =================
-                  Row(
+                 Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const CircleAvatar(
                         radius: 28,
@@ -104,9 +108,8 @@ class DriverArrivingSheet extends StatelessWidget {
                   const SizedBox(height: 5),
                   Divider(height: 1),
                   const SizedBox(height: 10),
-
-                  /// ================= CAR CARD (XD PERFECT) =================
-                  Column(
+                  
+                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
@@ -178,12 +181,14 @@ class DriverArrivingSheet extends StatelessWidget {
                   const Spacer(),
                   const Divider(),
 
-                  /// ================= BUTTONS =================
+                  
                   Row(
                     children: [
                       Expanded(
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Get.back();
+                          },
                           child: Column(
                             children: const [
                               Icon(Icons.close, size: 28),
@@ -195,7 +200,19 @@ class DriverArrivingSheet extends StatelessWidget {
                       ),
                       Expanded(
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Get.back();
+
+                            Future.delayed( Duration(milliseconds: 200), () {
+                              
+                            
+                            Get.bottomSheet(
+                               TripCompletedSheet(),
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                            );
+                            });
+                          },
                           child: Column(
                             children: const [
                               Icon(Icons.call, size: 28),
@@ -213,6 +230,7 @@ class DriverArrivingSheet extends StatelessWidget {
           },
         ),
       ],
+      ),
     );
   }
 }

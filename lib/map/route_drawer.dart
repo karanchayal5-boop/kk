@@ -16,7 +16,7 @@ class RouteDrawer {
 
     if (mapController == null) return;
 
-    // 1. Polyline
+    
     final newPolylines = <Polyline>{
       Polyline(
         polylineId: PolylineId("route_1"),
@@ -27,7 +27,7 @@ class RouteDrawer {
       ),
     };
 
-    // 2. Annotations
+    
     final newAnnotations = Set<Annotation>.from(annotations)
       ..addAll({
         Annotation(
@@ -42,10 +42,10 @@ class RouteDrawer {
         ),
       });
 
-    // 3. Update UI
+   
     onUpdate(newPolylines, newAnnotations);
 
-    // 4. Camera bounds
+    
     LatLngBounds bounds;
     if (source.latitude < destination.latitude) {
       bounds = LatLngBounds(southwest: source, northeast: destination);

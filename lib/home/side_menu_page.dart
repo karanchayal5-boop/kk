@@ -10,7 +10,7 @@ class SideMenuPage extends StatelessWidget {
       color: Colors.transparent,
       child: Row(
         children: [
-          // ================= LEFT MENU =================
+          
           Container(
             width: 110,
             color: Colors.white,
@@ -30,7 +30,7 @@ class SideMenuPage extends StatelessWidget {
             ),
           ),
 
-          // ================= RIGHT DARK AREA =================
+          
           Expanded(
             child: GestureDetector(
               onTap: () => Get.back(),
