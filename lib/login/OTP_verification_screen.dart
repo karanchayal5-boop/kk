@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kk/controller/auth_controller.dart';
 import 'package:kk/login/create_password_screen.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
@@ -10,23 +11,31 @@ class OtpVerificationScreen extends StatefulWidget {
 }
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
+  final AuthController authController = Get.find<AuthController>();
+  final List<TextEditingController> otpController =
+      List.generate(4, (index) => TextEditingController());
+
+  @override
+  void initState() {
+    super.initState();
+    authController.sendOtp(); // ✅ generate OTP via controller
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
       body: Stack(
         children: [
-          
           Positioned(
             top: 0,
             right: 0,
             child: Image.asset(
-              'assets/images/login.png', 
+              'assets/images/login.png',
               height: 120,
               fit: BoxFit.contain,
             ),
           ),
-
           Positioned(
             top: 60,
             left: 20,
@@ -43,14 +52,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               ),
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 230),
-                
                 const Text(
                   'Verify your number',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
@@ -61,25 +68,45 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   style: TextStyle(fontSize: 14, color: Colors.grey),
                 ),
                 const SizedBox(height: 40),
-
-                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _otpBox(first: true, last: false),
-                    _otpBox(first: false, last: false),
-                    _otpBox(first: false, last: false),
-                    _otpBox(first: false, last: true),
-                  ],
+                  children: List.generate(4, (index) {
+                    return _otpBox(
+                      first: index == 0,
+                      last: index == 3,
+                      index: index,
+                    );
+                  }),
                 ),
-
                 const SizedBox(height: 40),
-
                 SizedBox(
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
-                    onPressed: () => Get.to(() => const CreatePasswordScreen()),
+                    onPressed: () {
+                      String enteredOtp = otpController.map((e) => e.text).join();
+
+                      if (enteredOtp.length != 4) {
+                        Get.snackbar('Error', 'Please enter the complete OTP.',
+                            snackPosition: SnackPosition.TOP,
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white);
+                        return;
+                      }
+
+                      if (authController.verifyOtp(enteredOtp)) {
+                        Get.snackbar('Success', 'OTP verified successfully!',
+                            snackPosition: SnackPosition.TOP,
+                            backgroundColor: Colors.green,
+                            colorText: Colors.white);
+                        Get.to(() => const CreatePasswordScreen());
+                      } else {
+                        Get.snackbar('Error', 'Invalid OTP. Please try again.',
+                            snackPosition: SnackPosition.TOP,
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white);
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A1A1A),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -94,10 +121,22 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     children: [
                       const Text("Didn't receive verification code?", style: TextStyle(color: Colors.black)),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          authController.sendOtp();
+                          Get.snackbar(
+                            "OTP Sent",
+                            "OTP has been sent to your registered mobile number.",
+                            snackPosition: SnackPosition.TOP,
+                            backgroundColor: Colors.green,
+                            colorText: Colors.white,
+                          );
+                        },
                         child: const Text(
                           'Resend Code.',
-                          style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
+                          style: TextStyle(
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline),
                         ),
                       ),
                     ],
@@ -112,28 +151,21 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     );
   }
 
-  
-  Widget _otpBox({required bool first, last}) {
+  Widget _otpBox({required bool first, required bool last, required int index}) {
     return Container(
       height: 70,
       width: 70,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10,
-          offset: const Offset(0, 5)),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 5))],
       ),
       child: TextField(
         autofocus: true,
+        controller: otpController[index],
         onChanged: (value) {
-          if (value.length == 1 && last == false) {
-            FocusScope.of(context).nextFocus(); 
-          }
-          if (value.isEmpty && first == false) {
-            FocusScope.of(context).previousFocus(); 
-          }
+          if (value.length == 1 && !last) FocusScope.of(context).nextFocus();
+          if (value.isEmpty && !first) FocusScope.of(context).previousFocus();
         },
         showCursor: false,
         readOnly: false,
@@ -141,10 +173,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         keyboardType: TextInputType.number,
         maxLength: 1,
-        decoration: const InputDecoration(
-          counterText: "",
-          border: InputBorder.none,
-        ),
+        decoration: const InputDecoration(counterText: "", border: InputBorder.none),
       ),
     );
   }

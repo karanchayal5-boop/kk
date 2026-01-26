@@ -1,5 +1,8 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kk/menu/settings_screen.dart';
 
 class SideMenuPage extends StatelessWidget {
   const SideMenuPage({super.key});
@@ -21,7 +24,11 @@ class SideMenuPage extends StatelessWidget {
 
                   _item(Icons.home, "Home", true),
                   _item(Icons.waves, "Trips", false),
-                  _item(Icons.settings, "Settings", false),
+                  _item(Icons.settings, "Settings", false,
+                      onTap: () { Get.back();
+                      Get.to(() => const SettingsScreen()); 
+                      },
+                    ),
                   _item(Icons.card_giftcard, "Promo's", false),
                   _item(Icons.description, "Legal", false),
                   _item(Icons.chat_bubble_outline, "Contact", false),
@@ -44,16 +51,18 @@ class SideMenuPage extends StatelessWidget {
     );
   }
 
-  Widget _item(IconData icon, String text, bool active) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+  Widget _item(IconData icon, String text, bool active, {VoidCallback? onTap}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 12),
+    child: GestureDetector(
+      onTap: onTap,
       child: Column(
         children: [
           Container(
             height: 55,
             width: 55,
             decoration: BoxDecoration(
-              color: active ? Colors.orange : Colors.grey.shade200,
+              color: active ? Colors.orange : const Color.fromARGB(255, 255, 255, 255),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(
@@ -71,6 +80,7 @@ class SideMenuPage extends StatelessWidget {
           )
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 }

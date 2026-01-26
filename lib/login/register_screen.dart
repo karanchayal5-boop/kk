@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:kk/login/OTP_verification_screen.dart';
+import 'package:kk/controller/auth_controller.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -11,6 +12,13 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController firstNameCtrl = TextEditingController();
+  final TextEditingController lastNameCtrl = TextEditingController();
+  final TextEditingController emailCtrl = TextEditingController();
+
+  String mobileNumber = "";
   bool isAccepted = false;
 
   @override
@@ -19,18 +27,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       backgroundColor: const Color(0xFFF8F8F8),
       body: Stack(
         children: [
-          
           Positioned(
             top: 0,
             right: 0,
-            child: Image.asset(
-              'assets/images/login.png', 
-              height: 120,
-              fit: BoxFit.contain,
-            ),
+            child: Image.asset('assets/images/login.png', height: 120),
           ),
 
-          
           Positioned(
             top: 60,
             left: 20,
@@ -43,7 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   shape: BoxShape.circle,
                   boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
                 ),
-                child: const Icon(Icons.arrow_back_ios_new, size: 20, color: Colors.black),
+                child: const Icon(Icons.arrow_back_ios_new, size: 20),
               ),
             ),
           ),
@@ -51,81 +53,115 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 180),
-                  
-                  const Text(
-                    'Create a new account',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 40),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 180),
 
-                  
-                  _buildTextField('First name'),
-                  const SizedBox(height: 15),
-                  _buildTextField('Last name'),
-                  const SizedBox(height: 15),
-                  _buildTextField('Email address'),
-                  const SizedBox(height: 15),
-                  IntlPhoneField(
-                     decoration: InputDecoration(
-                     hintText: 'Mobile Number',
-                     fillColor: Colors.white,
-                     filled: true,
-                     border: OutlineInputBorder(
-                     borderRadius: BorderRadius.circular(10),
-                     borderSide: BorderSide.none,
-                     ),
+                    const Text(
+                      "Create a new account",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    initialCountryCode: 'IN', 
-                 onChanged: (phone) {
-                    print(phone.completeNumber); 
-                    },
-                   ),
-                  const SizedBox(height: 25),
+                    const SizedBox(height: 40),
 
-                  
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: isAccepted,
-                        activeColor: Colors.orange,
-                        onChanged: (value) {
-                          setState(() => isAccepted = value!);
+                    _buildField("First name", firstNameCtrl),
+                    const SizedBox(height: 15),
+
+                    _buildField("Last name", lastNameCtrl),
+                    const SizedBox(height: 15),
+
+                    _buildEmailField(),
+                    const SizedBox(height: 15),
+
+                    IntlPhoneField(
+                      decoration: InputDecoration(
+                        hintText: 'Mobile Number',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      initialCountryCode: 'IN',
+                      onChanged: (phone) {
+                        mobileNumber = phone.completeNumber;
+                      },
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: isAccepted,
+                          activeColor: Colors.orange,
+                          onChanged: (value) {
+                            setState(() {
+                              isAccepted = value!;
+                            });
+                          },
+                        ),
+                        const Text("I accept "),
+                        const Text(
+                          "Terms & Conditions",
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 55,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          final auth = Get.find<AuthController>();
+
+                          if (!_formKey.currentState!.validate()) return;
+
+                          if (mobileNumber.isEmpty) {
+                            Get.snackbar("Error", "Please enter mobile number");
+                            return;
+                          }
+
+                          if (!isAccepted) {
+                            Get.snackbar(
+                              "Error",
+                              "Please accept Terms & Conditions",
+                            );
+                            return;
+                          }
+
+                          auth.tempEmail.value = emailCtrl.text.trim();
+                          auth.sendOtp();
+
+                          Get.to(() => const OtpVerificationScreen());
                         },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          "Register",
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
                       ),
-                      const Text("By click you accept the ", style: TextStyle(fontSize: 13)),
-                      const Text(
-                        "Terms & conditions",
-                        style: TextStyle(fontSize: 13, decoration: TextDecoration.underline, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-
-                  
-                  SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton(
-                      onPressed: () => Get.to(() => const OtpVerificationScreen()),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1A1A1A),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        elevation: 5,
-                      ),
-                      child: const Text('Register', style: TextStyle(color: Colors.white, fontSize: 18)),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                ],
+
+                    const SizedBox(height: 30),
+                  ],
+                ),
               ),
             ),
           ),
@@ -134,22 +170,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildTextField(String hint) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
+  Widget _buildField(String hint, TextEditingController controller) {
+    return TextFormField(
+      controller: controller,
+      validator: (value) => value!.isEmpty ? "$hint is required" : null,
+      decoration: _decoration(hint),
+    );
+  }
+
+  Widget _buildEmailField() {
+    return TextFormField(
+      controller: emailCtrl,
+      validator: (value) {
+        if (value!.isEmpty) return "Email is required";
+        if (!GetUtils.isEmail(value)) return "Enter valid email";
+        return null;
+      },
+      decoration: _decoration("Email address"),
+    );
+  }
+
+  InputDecoration _decoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      filled: true,
+      fillColor: Colors.white,
+      border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 5)),
-        ],
-      ),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: const TextStyle(color: Colors.grey),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        ),
+        borderSide: BorderSide.none,
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kk/controller/auth_controller.dart';
 import 'package:kk/login/OTP_verification_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -10,8 +11,15 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  
+
   final TextEditingController _emailController = TextEditingController();
+  final AuthController authController = Get.find<AuthController>();
+
+  @override
+  void initState() {
+    super.initState();
+    authController.loadCredentials(); // Load saved email from storage
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,18 +27,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       backgroundColor: const Color(0xFFF8F8F8),
       body: Stack(
         children: [
-          
+
           Positioned(
             top: 0,
             right: 0,
             child: Image.asset(
-              'assets/images/login.png', 
+              'assets/images/login.png',
               height: 120,
               fit: BoxFit.contain,
             ),
           ),
 
-          
           Positioned(
             top: 60,
             left: 20,
@@ -54,20 +61,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 200),
-                
-                
+
                 const Text(
                   'Forgot Password',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 15),
+
                 const Text(
-                  'Please enter your registered email address and you’ll receive a link to reset your password.',
+                  'Please enter your registered email address and you’ll receive an OTP to reset your password.',
                   style: TextStyle(fontSize: 14, color: Colors.grey, height: 1.5),
                 ),
+
                 const SizedBox(height: 50),
 
-                
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -85,7 +92,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       hintText: 'Email address',
-                      hintStyle: TextStyle(color: Colors.grey),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                     ),
@@ -94,36 +100,45 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                 const SizedBox(height: 40),
 
-                
                 SizedBox(
                   width: double.infinity,
                   height: 55,
-                  
                   child: ElevatedButton(
-                    onPressed: () {
-                      String email = _emailController.text;
-                      bool isEmailValid = GetUtils.isEmail(email); 
+                    onPressed: () async {
 
-                       if (isEmailValid) {
-    
+                      String email = _emailController.text.trim();
+
+                      if (!GetUtils.isEmail(email)) {
+                        Get.snackbar("Invalid Email", "Please enter valid email");
+                        return;
+                      }
+
+                      await authController.loadCredentials();
+
+                      if (email == authController.savedEmail.value) {
+                        // ✅ Email matched → Send OTP
+                        authController.sendOtp();
+
                         Get.to(() => const OtpVerificationScreen());
-                    } else {
-    
-                      Get.snackbar("Invalid Email", "Please enter a valid email address",
-                      snackPosition: SnackPosition.BOTTOM);
-                       }
-                     },
+
+                      } else {
+                        // ❌ Email not registered
+                        Get.snackbar(
+                          "Email Not Found",
+                          "This email is not registered",
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A1A1A),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      elevation: 5,
                     ),
-                    
                     child: const Text(
                       'Submit',
-                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+                      style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
                 ),

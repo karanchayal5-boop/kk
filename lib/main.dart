@@ -10,16 +10,17 @@ import 'package:kk/map_screen.dart';
 import 'package:kk/login/register_screen.dart';
 import 'dart:async';
 import 'package:kk/login/screen1.dart';
-
-
-
-void main() {
+import 'package:kk/controller/auth_controller.dart';
+  void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+  final AuthController authController = Get.put(AuthController());
+  await authController.loadCredentials();
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/splash',
+      initialRoute: '/login',
       getPages: [
         GetPage(name: '/splash', page: () => SplashScreen()),
         GetPage(name: '/screen1', page: () => Screen1()),

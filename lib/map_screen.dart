@@ -10,7 +10,7 @@ import 'package:kk/home/initial_search_sheet.dart';
 import 'package:kk/home/notes_for_driver_sheet.dart';
 import 'package:kk/home/vehicle_selection_sheet.dart';
 import 'package:kk/home/custom_menu_button.dart';
-import 'package:kk/home/side_menu_page.dart';
+import 'package:kk/menu/side_menu_page.dart';
 
 class MyAppleMap extends StatefulWidget {
   const MyAppleMap({super.key});

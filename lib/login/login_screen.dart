@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart' show Get;
-import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/get.dart';
 import 'package:kk/login/forget_password_screen.dart';
 import 'package:kk/map_screen.dart';
 import 'package:kk/login/register_screen.dart';
+import 'package:kk/controller/auth_controller.dart';
 
 
 class LoginScreen extends StatefulWidget {
@@ -14,6 +14,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final AuthController authController = Get.find<AuthController>();
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  
   
   bool isPasswordWrong = false;
 
@@ -75,9 +80,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                _buildTextField('Email address'),
+                _buildTextField('Email address', emailController),
                 const SizedBox(height: 15),
-                _buildTextField('Password'),
+                _buildTextField('Password', passwordController, isPasswordWrong: isPasswordWrong),
                 const SizedBox(height: 30),
 
                 
@@ -85,21 +90,42 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
-                    
-                      onPressed: () => Get.to(() => MyAppleMap()),
-                    
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1A1A1A),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'Log In',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
+                  onPressed: () {
+                    String email = emailController.text.trim();
+                    String password = passwordController.text.trim();
+
+                    if (email.isEmpty || password.isEmpty) {
+                      Get.snackbar('Error', 'Please fill in all fields.',
+                          backgroundColor: Colors.redAccent,
+                          colorText: Colors.white);
+                      return;
+                    }
+
+                    bool isCorrect = authController.login(email, password);
+
+                  if (isCorrect) {
+                  
+                  Get.offAll(() => MyAppleMap());
+                 } else {
+                  
+                  setState(() {
+                  isPasswordWrong = true;
+                 });
+                }
+              },
+                  style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A1A1A),
+                  shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+                  child: const Text(
+                    'Log In',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ),
+              ),
+
                 const SizedBox(height: 40),
 
                 Center(
@@ -132,7 +158,10 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildTextField(String hint) {
+  Widget _buildTextField(
+    String hint,
+    TextEditingController controller,
+    {bool isPasswordWrong = false}) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -146,8 +175,9 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
       child: TextField(
+        controller: controller,
+        obscureText: hint == 'Password',
         onChanged: (value) {
-          
           if (isPasswordWrong) {
             setState(() {
               isPasswordWrong = false;
