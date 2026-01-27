@@ -18,7 +18,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   void initState() {
     super.initState();
-    authController.loadCredentials(); // Load saved email from storage
+    authController.allUsers(); // Load saved email from storage
   }
 
   @override
@@ -113,7 +113,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         return;
                       }
 
-                      await authController.loadCredentials();
+                      await authController.allUsers();
 
                       if (email == authController.savedEmail.value) {
                         // ✅ Email matched → Send OTP

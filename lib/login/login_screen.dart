@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kk/controller/auth_controller.dart';
 import 'package:kk/login/forget_password_screen.dart';
 import 'package:kk/map_screen.dart';
 import 'package:kk/login/register_screen.dart';
-import 'package:kk/controller/auth_controller.dart';
+
 
 
 class LoginScreen extends StatefulWidget {
@@ -90,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     String email = emailController.text.trim();
                     String password = passwordController.text.trim();
 
@@ -101,9 +102,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       return;
                     }
 
-                    bool isCorrect = authController.login(email, password);
+                    bool isCorrect = await authController.loginFromList(email, password);
 
                   if (isCorrect) {
+
+                    await authController.saveLoginSession(email);
                   
                   Get.offAll(() => MyAppleMap());
                  } else {

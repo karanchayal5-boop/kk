@@ -1,8 +1,14 @@
+import 'dart:convert' show jsonDecode, jsonEncode;
 import 'dart:math';
 import 'package:get/get.dart';
+import 'package:kk/map_screen.dart';
+import 'package:kk/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
+
+  var allUsers = <UserModel>[].obs;
+
   var generatedOtp = "".obs;
 
   var savedEmail = "".obs;
@@ -12,38 +18,51 @@ class AuthController extends GetxController {
 
   get auth => null;
 
+
   // ================= SAVE EMAIL + PASSWORD =================
-  Future<void> setCredentials(String email, String password) async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<void> saveUser(String email, String password) async {
+  final prefs = await SharedPreferences.getInstance();
 
-    await prefs.setString('user_email', email);
-    await prefs.setString('user_password', password);
+  // Load old users
+  String? data = prefs.getString("all_users");
+  List<UserModel> users = [];
 
-    savedEmail.value = email;
-    savedPassword.value = password;
-
-    print(" Saved Email: ${savedEmail.value}");
-    print(" Saved Password: ${savedPassword.value}");
+  if (data != null) {
+    List list = jsonDecode(data);
+    users = list.map((e) => UserModel.fromJson(e)).toList();
   }
 
-  // ================= LOAD FROM STORAGE =================
-  Future<void> loadCredentials() async {
-    final prefs = await SharedPreferences.getInstance();
+  // Check if user already exists
+  int index = users.indexWhere((u) => u.email == email);
 
-    savedEmail.value = prefs.getString('user_email') ?? "";
-    savedPassword.value = prefs.getString('user_password') ?? "";
-
-    print(" Loaded Email: ${savedEmail.value}");
-    print(" Loaded Password: ${savedPassword.value}");
+  if (index != -1) {
+    users[index].password = password; // update
+  } else {
+    users.add(UserModel(email: email, password: password)); // add new
   }
+
+  // Save again
+  await prefs.setString("all_users", jsonEncode(users.map((e) => e.toJson()).toList()));
+
+  allUsers.value = users;
+
+  print(" Total Users: ${users.length}");
+}
+
 
   // ================= LOGIN CHECK =================
-  bool login(String email, String password) {
-    print(" Entered: $email / $password");
-    print(" Saved: ${savedEmail.value} / ${savedPassword.value}");
+  Future<bool> loginFromList(String email, String password) async {
+  final prefs = await SharedPreferences.getInstance();
+  String? data = prefs.getString("all_users");
 
-    return email == savedEmail.value && password == savedPassword.value;
-  }
+  if (data == null) return false;
+
+  List list = jsonDecode(data);
+  List<UserModel> users = list.map((e) => UserModel.fromJson(e)).toList();
+
+  return users.any((u) => u.email == email && u.password == password);
+}
+
 
   // ================= LOGOUT =================
   Future<void> logout() async {

@@ -92,7 +92,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                       // 🔥 TEMP EMAIL (abhi hardcoded)
                       String email = authController.tempEmail.value;
 
-                      await authController.setCredentials(email, p1);
+                      await authController.saveUser(email, p1);
 
                       Get.offAllNamed('/login');
                     },

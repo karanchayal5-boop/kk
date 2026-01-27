@@ -16,7 +16,7 @@ import 'package:kk/controller/auth_controller.dart';
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   final AuthController authController = Get.put(AuthController());
-  await authController.loadCredentials();
+  await authController.allUsers();
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
