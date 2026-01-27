@@ -19,6 +19,19 @@ class AuthController extends GetxController {
   get auth => null;
 
 
+// ================= SAVE LOGIN SESSION =================
+Future<void> saveLoginSession(String email) async {
+  final prefs = await SharedPreferences.getInstance();
+
+  await prefs.setBool("isLoggedIn", true);
+  await prefs.setString("currentUser", email);
+
+  print("Login session saved for: $email");
+}
+
+  
+
+
   // ================= SAVE EMAIL + PASSWORD =================
   Future<void> saveUser(String email, String password) async {
   final prefs = await SharedPreferences.getInstance();
@@ -63,18 +76,14 @@ class AuthController extends GetxController {
   return users.any((u) => u.email == email && u.password == password);
 }
 
-
   // ================= LOGOUT =================
-  Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user_email');
-    await prefs.remove('user_password');
+Future<void> logout() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove("isLoggedIn");
+  await prefs.remove("currentUser");
 
-    savedEmail.value = "";
-    savedPassword.value = "";
-
-    print(" User logged out, credentials cleared.");
-  }
+  Get.offAll(() => MyAppleMap()); 
+}
 
   // ================= OTP =================
   void sendOtp() {

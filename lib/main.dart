@@ -11,6 +11,7 @@ import 'package:kk/login/register_screen.dart';
 import 'dart:async';
 import 'package:kk/login/screen1.dart';
 import 'package:kk/controller/auth_controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
   void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -20,7 +21,7 @@ import 'package:kk/controller/auth_controller.dart';
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
+      initialRoute: '/splash',
       getPages: [
         GetPage(name: '/splash', page: () => SplashScreen()),
         GetPage(name: '/screen1', page: () => Screen1()),
@@ -40,40 +41,39 @@ class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
- 
-  
- 
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  Null get sizedbox => null;
 
   @override
   void initState() {
     super.initState();
-    
-    Future.delayed(Duration(seconds: 3), () {
-      if (Get.currentRoute == '/splash') {
-         Get.toNamed('/screen1');
-      }
-  });
+    checkLogin();
+  }
+
+  Future<void> checkLogin() async {
+    await Future.delayed(Duration(seconds: 3));
+
+    final prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool("isLoggedIn") ?? false;
+
+    if (isLoggedIn) {
+      Get.offAllNamed('/map');
+    } else {
+      Get.offAllNamed('/login');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-      body: Center
-      
-      (child: Image.asset('assets/images/splash_logo@3x.png',
-      width: 300,)),
-      
+      body: Center(
+        child: Image.asset(
+          'assets/images/splash_logo@3x.png',
+          width: 300,
+        ),
+      ),
     );
   }
 }
-
-
-
-
-
