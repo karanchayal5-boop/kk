@@ -5,7 +5,9 @@ import 'package:kk/map_screen.dart';
 import 'package:kk/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 class AuthController extends GetxController {
+  
 
   var allUsers = <UserModel>[].obs;
 
@@ -19,7 +21,7 @@ class AuthController extends GetxController {
   get auth => null;
 
 
-// ================= SAVE LOGIN SESSION =================
+
 Future<void> saveLoginSession(String email) async {
   final prefs = await SharedPreferences.getInstance();
 
@@ -32,7 +34,7 @@ Future<void> saveLoginSession(String email) async {
   
 
 
-  // ================= SAVE EMAIL + PASSWORD =================
+  
   Future<void> saveUser(String email, String password) async {
   final prefs = await SharedPreferences.getInstance();
 
@@ -45,16 +47,16 @@ Future<void> saveLoginSession(String email) async {
     users = list.map((e) => UserModel.fromJson(e)).toList();
   }
 
-  // Check if user already exists
+  
   int index = users.indexWhere((u) => u.email == email);
 
   if (index != -1) {
-    users[index].password = password; // update
+    users[index].password = password; 
   } else {
-    users.add(UserModel(email: email, password: password)); // add new
+    users.add(UserModel(email: email, password: password)); 
   }
 
-  // Save again
+  
   await prefs.setString("all_users", jsonEncode(users.map((e) => e.toJson()).toList()));
 
   allUsers.value = users;
@@ -63,7 +65,7 @@ Future<void> saveLoginSession(String email) async {
 }
 
 
-  // ================= LOGIN CHECK =================
+  
   Future<bool> loginFromList(String email, String password) async {
   final prefs = await SharedPreferences.getInstance();
   String? data = prefs.getString("all_users");
@@ -76,7 +78,7 @@ Future<void> saveLoginSession(String email) async {
   return users.any((u) => u.email == email && u.password == password);
 }
 
-  // ================= LOGOUT =================
+  
 Future<void> logout() async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.remove("isLoggedIn");
@@ -85,11 +87,11 @@ Future<void> logout() async {
   Get.offAll(() => MyAppleMap()); 
 }
 
-  // ================= OTP =================
+  
   void sendOtp() {
-    int otp = 1000 + Random().nextInt(9000); // 4 digit
+    int otp = 1000 + Random().nextInt(9000); 
     generatedOtp.value = otp.toString();
-    print(" Karan your OTP IS: ${generatedOtp.value}");
+    print(" Karan your OTP is : ${generatedOtp.value}");
   }
 
   bool verifyOtp(String inputOtp) {

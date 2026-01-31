@@ -12,6 +12,8 @@ import 'dart:async';
 import 'package:kk/login/screen1.dart';
 import 'package:kk/controller/auth_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+
   void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -21,7 +23,7 @@ import 'package:shared_preferences/shared_preferences.dart';
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/splash',
+      initialRoute: '/otp',
       getPages: [
         GetPage(name: '/splash', page: () => SplashScreen()),
         GetPage(name: '/screen1', page: () => Screen1()),
@@ -61,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (isLoggedIn) {
       Get.offAllNamed('/map');
     } else {
-      Get.offAllNamed('/login');
+      Get.offAllNamed('/screen1');
     }
   }
 

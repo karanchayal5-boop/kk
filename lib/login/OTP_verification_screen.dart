@@ -18,7 +18,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   @override
   void initState() {
     super.initState();
-    authController.sendOtp(); // ✅ generate OTP via controller
+    authController.sendOtp(); 
   }
 
   @override

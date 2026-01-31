@@ -38,6 +38,9 @@ dependencies:
   geolocator: ^14.0.2
   geocoding: ^4.0.0
   shared_preferences: ^2.2.2
+  dio: ^5.4.0
+  
+  
   
   
   
