@@ -23,7 +23,7 @@ import 'package:shared_preferences/shared_preferences.dart';
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/otp',
+      initialRoute: '/login',
       getPages: [
         GetPage(name: '/splash', page: () => SplashScreen()),
         GetPage(name: '/screen1', page: () => Screen1()),

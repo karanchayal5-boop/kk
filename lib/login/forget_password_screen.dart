@@ -18,7 +18,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   void initState() {
     super.initState();
-    authController.allUsers(); // Load saved email from storage
+    authController.allUsers(); 
   }
 
   @override

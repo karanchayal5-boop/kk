@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       return;
                     }
 
-                    bool isCorrect = await authController.loginFromList(email, password);
+                    bool isCorrect = await authController.loginUser(email, password);
 
                   if (isCorrect) {
 

@@ -1,102 +1,123 @@
-import 'dart:convert' show jsonDecode, jsonEncode;
 import 'dart:math';
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:kk/map_screen.dart';
 import 'package:kk/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class AuthController extends GetxController {
-  
+  // ================= DIO SETUP =================
+  final Dio dio = Dio(
+    BaseOptions(
+      baseUrl: "https://69805b5a6570ee87d50ee3f1.mockapi.io",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    ),
+  );
 
+  // ================= OBSERVABLES =================
   var allUsers = <UserModel>[].obs;
-
   var generatedOtp = "".obs;
 
   var savedEmail = "".obs;
   var savedPassword = "".obs;
-
   var tempEmail = "".obs;
+  var tempName = "".obs;
 
-  get auth => null;
+  // ================= SAVE LOGIN SESSION =================
+  Future<void> saveLoginSession(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("isLoggedIn", true);
+    await prefs.setString("currentUser", email);
 
-
-
-Future<void> saveLoginSession(String email) async {
-  final prefs = await SharedPreferences.getInstance();
-
-  await prefs.setBool("isLoggedIn", true);
-  await prefs.setString("currentUser", email);
-
-  print("Login session saved for: $email");
-}
-
-  
-
-
-  
-  Future<void> saveUser(String email, String password) async {
-  final prefs = await SharedPreferences.getInstance();
-
-  // Load old users
-  String? data = prefs.getString("all_users");
-  List<UserModel> users = [];
-
-  if (data != null) {
-    List list = jsonDecode(data);
-    users = list.map((e) => UserModel.fromJson(e)).toList();
+    print("👍 Login session saved for: $email");
   }
 
-  
-  int index = users.indexWhere((u) => u.email == email);
+  // ================= SIGNUP (POST) =================
+  Future<bool> registerUser(
+    String name,
+    String email, 
+    String password,
+    ) async {
+    try {
+      final response = await dio.post(
+        "/users",
+        data: {
+          "name": name,
+          "email": email,
+          "password": password,
+        },
+      );
 
-  if (index != -1) {
-    users[index].password = password; 
-  } else {
-    users.add(UserModel(email: email, password: password)); 
+      print("😁 User Registered: ${response.data}");
+      return true;
+    } catch (e) {
+      print("😭 Register Error: $e");
+      return false;
+    }
   }
 
-  
-  await prefs.setString("all_users", jsonEncode(users.map((e) => e.toJson()).toList()));
+  // ================= FETCH USERS (GET) =================
+  Future<void> fetchUsers() async {
+    try {
+      final response = await dio.get("/users");
 
-  allUsers.value = users;
+      List<UserModel> users = (response.data as List)
+          .map((e) => UserModel.fromJson(e))
+          .toList();
 
-  print(" Total Users: ${users.length}");
-}
+      allUsers.value = users;
 
+      print("👍 Users fetched: ${users.length}");
+    } catch (e) {
+      print("😩 Fetch Error: $e");
+    }
+  }
 
-  
-  Future<bool> loginFromList(String email, String password) async {
-  final prefs = await SharedPreferences.getInstance();
-  String? data = prefs.getString("all_users");
+  // ================= LOGIN (GET + CHECK) =================
+  Future<bool> loginUser(String email, String password) async {
+    try {
+      final response = await dio.get("/users");
 
-  if (data == null) return false;
+      List<UserModel> users = (response.data as List)
+          .map((e) => UserModel.fromJson(e))
+          .toList();
 
-  List list = jsonDecode(data);
-  List<UserModel> users = list.map((e) => UserModel.fromJson(e)).toList();
+      bool success =
+          users.any((u) => u.email == email && u.password == password);
 
-  return users.any((u) => u.email == email && u.password == password);
-}
+      if (success) {
+        await saveLoginSession(email);
+        print("👍 Login success");
+      } else {
+        print("😔 Invalid credentials");
+      }
 
-  
-Future<void> logout() async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.remove("isLoggedIn");
-  await prefs.remove("currentUser");
+      return success;
+    } catch (e) {
+      print("😩 Login Error: $e");
+      return false;
+    }
+  }
 
-  Get.offAll(() => MyAppleMap()); 
-}
+  // ================= LOGOUT =================
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove("isLoggedIn");
+    await prefs.remove("currentUser");
 
-  
+    Get.offAll(() => MyAppleMap());
+  }
+
+  // ================= OTP SYSTEM =================
   void sendOtp() {
-    int otp = 1000 + Random().nextInt(9000); 
+    int otp = 1000 + Random().nextInt(9000);
     generatedOtp.value = otp.toString();
-    print(" Karan your OTP is : ${generatedOtp.value}");
+    print("📩 OTP is: ${generatedOtp.value}");
   }
 
   bool verifyOtp(String inputOtp) {
     return inputOtp == generatedOtp.value;
   }
-
-  void saveUserData(String text, String mobileNumber) {}
 }
