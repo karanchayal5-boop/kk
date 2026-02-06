@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:kk/firebase_options.dart';
 import 'package:kk/home/payment_method_page.dart';
 import 'package:kk/login/OTP_verification_screen.dart';
 import 'package:kk/login/create_password_screen.dart';
@@ -11,13 +12,14 @@ import 'package:kk/map_screen.dart';
 import 'package:kk/login/register_screen.dart';
 import 'dart:async';
 import 'package:kk/login/screen1.dart';
-  
 import 'package:firebase_auth/firebase_auth.dart';
 
 
   void main() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
