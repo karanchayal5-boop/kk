@@ -1,123 +1,87 @@
-import 'dart:math';
-import 'package:dio/dio.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:kk/map_screen.dart';
-import 'package:kk/models/user_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
-  // ================= DIO SETUP =================
-  final Dio dio = Dio(
-    BaseOptions(
-      baseUrl: "https://69805b5a6570ee87d50ee3f1.mockapi.io",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    ),
-  );
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // ================= OBSERVABLES =================
-  var allUsers = <UserModel>[].obs;
-  var generatedOtp = "".obs;
+  var isLoading = false.obs;
 
-  var savedEmail = "".obs;
-  var savedPassword = "".obs;
-  var tempEmail = "".obs;
-  var tempName = "".obs;
 
-  // ================= SAVE LOGIN SESSION =================
-  Future<void> saveLoginSession(String email) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool("isLoggedIn", true);
-    await prefs.setString("currentUser", email);
+Future<Map<String, dynamic>?> getUserProfile() async {
+  String uid = FirebaseAuth.instance.currentUser!.uid;
 
-    print("👍 Login session saved for: $email");
-  }
+  DocumentSnapshot doc =
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(uid)
+          .get();
 
-  // ================= SIGNUP (POST) =================
+  return doc.data() as Map<String, dynamic>;
+}
+
+  // ================= SIGNUP =================
   Future<bool> registerUser(
     String name,
-    String email, 
+    String email,
     String password,
-    ) async {
+  ) async {
     try {
-      final response = await dio.post(
-        "/users",
-        data: {
-          "name": name,
-          "email": email,
-          "password": password,
-        },
+      isLoading.value = true;
+
+      // 🔐 Firebase Auth
+      UserCredential userCred = await _auth
+          .createUserWithEmailAndPassword(
+        email: email,
+        password: password,
       );
 
-      print("😁 User Registered: ${response.data}");
+      String uid = userCred.user!.uid;
+
+      // 🗄️ Firestore
+      await _firestore.collection("users").doc(uid).set({
+        "name": name,
+        "email": email,
+        "createdAt": FieldValue.serverTimestamp(),
+      });
+
+      print("✅ User registered & saved in Firestore");
       return true;
     } catch (e) {
-      print("😭 Register Error: $e");
+      print("❌ Register error: $e");
       return false;
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  // ================= FETCH USERS (GET) =================
-  Future<void> fetchUsers() async {
-    try {
-      final response = await dio.get("/users");
-
-      List<UserModel> users = (response.data as List)
-          .map((e) => UserModel.fromJson(e))
-          .toList();
-
-      allUsers.value = users;
-
-      print("👍 Users fetched: ${users.length}");
-    } catch (e) {
-      print("😩 Fetch Error: $e");
-    }
-  }
-
-  // ================= LOGIN (GET + CHECK) =================
+  // ================= LOGIN =================
   Future<bool> loginUser(String email, String password) async {
     try {
-      final response = await dio.get("/users");
+      isLoading.value = true;
 
-      List<UserModel> users = (response.data as List)
-          .map((e) => UserModel.fromJson(e))
-          .toList();
+      await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      bool success =
-          users.any((u) => u.email == email && u.password == password);
-
-      if (success) {
-        await saveLoginSession(email);
-        print("👍 Login success");
-      } else {
-        print("😔 Invalid credentials");
-      }
-
-      return success;
+      print("✅ Login success");
+      return true;
     } catch (e) {
-      print("😩 Login Error: $e");
+      print("❌ Login error: $e");
       return false;
+    } finally {
+      isLoading.value = false;
     }
   }
 
   // ================= LOGOUT =================
   Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove("isLoggedIn");
-    await prefs.remove("currentUser");
-
-    Get.offAll(() => MyAppleMap());
+    await _auth.signOut();
+    print("👋 User logged out");
   }
 
-  // ================= OTP SYSTEM =================
-  void sendOtp() {
-    int otp = 1000 + Random().nextInt(9000);
-    generatedOtp.value = otp.toString();
-    print("📩 OTP is: ${generatedOtp.value}");
-  }
-
-  bool verifyOtp(String inputOtp) {
-    return inputOtp == generatedOtp.value;
-  }
+  // ================= CURRENT USER =================
+  User? get currentUser => _auth.currentUser;
 }

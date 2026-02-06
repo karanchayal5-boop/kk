@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -10,20 +11,22 @@ import 'package:kk/map_screen.dart';
 import 'package:kk/login/register_screen.dart';
 import 'dart:async';
 import 'package:kk/login/screen1.dart';
-import 'package:kk/controller/auth_controller.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+  
+import 'package:firebase_auth/firebase_auth.dart';
 
 
   void main() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-  final AuthController authController = Get.put(AuthController());
-  await authController.allUsers();
+  
+  
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
+      initialRoute: '/splash',
       getPages: [
         GetPage(name: '/splash', page: () => SplashScreen()),
         GetPage(name: '/screen1', page: () => Screen1()),
@@ -55,17 +58,19 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> checkLogin() async {
-    await Future.delayed(Duration(seconds: 3));
+  await Future.delayed(const Duration(seconds: 3));
 
-    final prefs = await SharedPreferences.getInstance();
-    bool isLoggedIn = prefs.getBool("isLoggedIn") ?? false;
+  User? user = FirebaseAuth.instance.currentUser;
 
-    if (isLoggedIn) {
-      Get.offAllNamed('/map');
-    } else {
-      Get.offAllNamed('/screen1');
-    }
+  if (user != null) {
+    // already logged in
+    Get.offAllNamed('/map');
+  } else {
+    // not logged in
+    Get.offAllNamed('/screen1');
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

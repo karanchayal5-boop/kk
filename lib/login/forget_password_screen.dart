@@ -18,7 +18,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   void initState() {
     super.initState();
-    authController.allUsers(); 
+     
   }
 
   @override
@@ -113,22 +113,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         return;
                       }
 
-                      await authController.allUsers();
-
-                      if (email == authController.savedEmail.value) {
-                        // ✅ Email matched → Send OTP
-                        authController.sendOtp();
+                     
 
                         Get.to(() => const OtpVerificationScreen());
 
-                      } else {
-                        // ❌ Email not registered
-                        Get.snackbar(
-                          "Email Not Found",
-                          "This email is not registered",
-                          snackPosition: SnackPosition.BOTTOM,
-                        );
-                      }
+                      
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A1A1A),

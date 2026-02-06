@@ -141,8 +141,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return;
                           }
 
-                          auth.tempEmail.value = emailCtrl.text.trim();
-                          auth.sendOtp();
+                          
 
                           Get.to(() => const OtpVerificationScreen());
                         },

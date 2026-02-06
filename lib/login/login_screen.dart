@@ -106,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   if (isCorrect) {
 
-                    await authController.saveLoginSession(email);
+                    
                   
                   Get.offAll(() => MyAppleMap());
                  } else {

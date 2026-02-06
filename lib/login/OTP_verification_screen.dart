@@ -18,7 +18,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   @override
   void initState() {
     super.initState();
-    authController.sendOtp(); 
+     
   }
 
   @override
@@ -94,18 +94,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         return;
                       }
 
-                      if (authController.verifyOtp(enteredOtp)) {
-                        Get.snackbar('Success', 'OTP verified successfully!',
-                            snackPosition: SnackPosition.TOP,
-                            backgroundColor: Colors.green,
-                            colorText: Colors.white);
+                      
                         Get.to(() => const CreatePasswordScreen());
-                      } else {
-                        Get.snackbar('Error', 'Invalid OTP. Please try again.',
-                            snackPosition: SnackPosition.TOP,
-                            backgroundColor: Colors.red,
-                            colorText: Colors.white);
-                      }
+                      
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A1A1A),
@@ -122,7 +113,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       const Text("Didn't receive verification code?", style: TextStyle(color: Colors.black)),
                       TextButton(
                         onPressed: () {
-                          authController.sendOtp();
+                          
                           Get.snackbar(
                             "OTP Sent",
                             "OTP has been sent to your registered mobile number.",

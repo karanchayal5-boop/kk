@@ -11,6 +11,7 @@ import 'package:kk/home/notes_for_driver_sheet.dart';
 import 'package:kk/home/vehicle_selection_sheet.dart';
 import 'package:kk/home/custom_menu_button.dart';
 import 'package:kk/menu/side_menu_page.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class MyAppleMap extends StatefulWidget {
   const MyAppleMap({super.key});
@@ -22,6 +23,9 @@ class MyAppleMap extends StatefulWidget {
 class _MyAppleMapState extends State<MyAppleMap> with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TaxiController taxiController = Get.put(TaxiController());
+  DatabaseReference? driverRef;
+  StreamSubscription<DatabaseEvent>? driverListener;
+
 
   AppleMapController? mapController;
 
@@ -41,6 +45,24 @@ class _MyAppleMapState extends State<MyAppleMap> with SingleTickerProviderStateM
   late AnimationController _blinkController;
   late Animation<double> _opacityAnimation;
 
+
+  void _updateDriverMarker(LatLng driverPos) {
+  setState(() {
+    _annotations.removeWhere(
+      (a) => a.annotationId.value == "taxi1",
+    );
+
+    _annotations.add(
+      Annotation(
+        annotationId: AnnotationId("taxi1"),
+        position: driverPos,
+        icon: taxiIcon ?? BitmapDescriptor.defaultAnnotation,
+      ),
+    );
+  });
+}
+
+
   @override
   void initState() {
     super.initState();
@@ -56,10 +78,29 @@ class _MyAppleMapState extends State<MyAppleMap> with SingleTickerProviderStateM
       });
 
     _initMapData();
+    driverRef =
+    FirebaseDatabase.instance.ref("driversLocation/driver_1");
+
+driverListener = driverRef!.onValue.listen((event) {
+  if (event.snapshot.value != null) {
+    final data = event.snapshot.value as Map;
+
+    LatLng driverPos = LatLng(
+      data["lat"],
+      data["lng"],
+    );
+
+    _updateDriverMarker(driverPos);
   }
+});
+    
+  }
+  
+
 
   @override
   void dispose() {
+    driverListener?.cancel();
     _positionStream?.cancel();
     _blinkController.dispose();
     super.dispose();
@@ -128,16 +169,6 @@ class _MyAppleMapState extends State<MyAppleMap> with SingleTickerProviderStateM
         position: _currentLocation,
         icon: userIcon ?? BitmapDescriptor.defaultAnnotation,
         infoWindow: const InfoWindow(title: "You are here"),
-      ),
-      Annotation(
-        annotationId:  AnnotationId("taxi1"),
-        position: LatLng(_currentLocation.latitude + 0.002, _currentLocation.longitude + 0.002),
-        icon: taxiIcon ?? BitmapDescriptor.defaultAnnotation,
-      ),
-      Annotation(
-        annotationId:  AnnotationId("taxi2"),
-        position: LatLng(_currentLocation.latitude - 0.002, _currentLocation.longitude - 0.001),
-        icon: taxiIcon ?? BitmapDescriptor.defaultAnnotation,
       ),
     };
   }

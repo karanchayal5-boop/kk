@@ -90,8 +90,8 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                       }
 
                       await authController.registerUser(
-                        authController.tempName.value,
-                        authController.tempEmail.value,
+                        authController.currentUser!.displayName ?? "User",
+                        authController.currentUser!.email ?? "user@example.com",
                         p1,
                         );
 
