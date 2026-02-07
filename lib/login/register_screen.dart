@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:kk/login/OTP_verification_screen.dart';
 import 'package:kk/controller/auth_controller.dart';
+import 'package:kk/controller/otp_controller.dart';
+
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -12,11 +14,14 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+
+  final OtpController otpController = Get.find<OtpController>();
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController firstNameCtrl = TextEditingController();
   final TextEditingController lastNameCtrl = TextEditingController();
   final TextEditingController emailCtrl = TextEditingController();
+  final AuthController authController = Get.find<AuthController>();
 
   String mobileNumber = "";
   bool isAccepted = false;
@@ -124,7 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       height: 55,
                       child: ElevatedButton(
                         onPressed: () {
-                          final auth = Get.find<AuthController>();
+                          
 
                           if (!_formKey.currentState!.validate()) return;
 
@@ -140,8 +145,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             );
                             return;
                           }
-
-                          
+ 
+                          authController.tempEmail.value = emailCtrl.text.trim();
+                          otpController.sendOtp(mobileNumber);
 
                           Get.to(() => const OtpVerificationScreen());
                         },

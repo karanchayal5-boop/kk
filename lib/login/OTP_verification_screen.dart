@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kk/controller/otp_controller.dart';
 import 'package:kk/controller/auth_controller.dart';
 import 'package:kk/login/create_password_screen.dart';
 
@@ -12,8 +13,10 @@ class OtpVerificationScreen extends StatefulWidget {
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final AuthController authController = Get.find<AuthController>();
-  final List<TextEditingController> otpController =
-      List.generate(4, (index) => TextEditingController());
+  final OtpController otpController = Get.find<OtpController>();
+  final List<TextEditingController> otpControllers = 
+      List.generate(6, (_) => TextEditingController());
+      
 
   @override
   void initState() {
@@ -70,10 +73,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(4, (index) {
+                  children: List.generate(6, (index) {
                     return _otpBox(
                       first: index == 0,
-                      last: index == 3,
+                      last: index == 5,
                       index: index,
                     );
                   }),
@@ -84,9 +87,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   height: 55,
                   child: ElevatedButton(
                     onPressed: () {
-                      String enteredOtp = otpController.map((e) => e.text).join();
+                      String enteredOtp = otpControllers.map((e) => e.text).join();
 
-                      if (enteredOtp.length != 4) {
+                      if (enteredOtp.length != 6) {
                         Get.snackbar('Error', 'Please enter the complete OTP.',
                             snackPosition: SnackPosition.TOP,
                             backgroundColor: Colors.red,
@@ -113,6 +116,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       const Text("Didn't receive verification code?", style: TextStyle(color: Colors.black)),
                       TextButton(
                         onPressed: () {
+                          otpController.sendOtp(authController.tempEmail.value);
                           
                           Get.snackbar(
                             "OTP Sent",
@@ -144,8 +148,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   Widget _otpBox({required bool first, required bool last, required int index}) {
     return Container(
-      height: 70,
-      width: 70,
+      height: 60,
+      width: 50,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -153,7 +157,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       ),
       child: TextField(
         autofocus: true,
-        controller: otpController[index],
+        controller: otpControllers[index],
         onChanged: (value) {
           if (value.length == 1 && !last) FocusScope.of(context).nextFocus();
           if (value.isEmpty && !first) FocusScope.of(context).previousFocus();
@@ -161,7 +165,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         showCursor: false,
         readOnly: false,
         textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         keyboardType: TextInputType.number,
         maxLength: 1,
         decoration: const InputDecoration(counterText: "", border: InputBorder.none),

@@ -7,7 +7,34 @@ class AuthController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   var isLoading = false.obs;
+  var tempEmail = "".obs;
 
+  
+Future<void> createUser({required String password}) async {
+  try {
+    isLoading.value = true;
+
+    // 🔐 Firebase Auth
+    UserCredential userCred = await _auth.createUserWithEmailAndPassword(
+      email: tempEmail.value,
+      password: password,
+    );
+
+    String uid = userCred.user!.uid;
+
+    // 🗄️ Firestore
+    await _firestore.collection("users").doc(uid).set({
+      "email": tempEmail.value,
+      "createdAt": FieldValue.serverTimestamp(),
+    });
+
+    print("✅ User registered & saved in Firestore");
+  } catch (e) {
+    print("❌ Create user error: $e");
+  } finally {
+    isLoading.value = false;
+  }
+}
 
 Future<Map<String, dynamic>?> getUserProfile() async {
   String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -81,7 +108,4 @@ Future<Map<String, dynamic>?> getUserProfile() async {
     await _auth.signOut();
     print("👋 User logged out");
   }
-
-  // ================= CURRENT USER =================
-  User? get currentUser => _auth.currentUser;
 }

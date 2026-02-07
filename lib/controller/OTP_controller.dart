@@ -1,34 +1,33 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
-class AuthController extends GetxController {
-  FirebaseAuth auth = FirebaseAuth.instance;
+class OtpController extends GetxController {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   var verificationId = "".obs;
   var isLoading = false.obs;
 
   // ================= SEND OTP =================
-  Future<void> sendOtp(String phone) async {
+  Future<void> sendOtp(String phoneNumber) async {
     isLoading.value = true;
 
-    await auth.verifyPhoneNumber(
-      phoneNumber: phone,
+    await _auth.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
       timeout: const Duration(seconds: 60),
 
       verificationCompleted: (PhoneAuthCredential credential) async {
-        await auth.signInWithCredential(credential);
-        Get.offAllNamed('/map');
+        await _auth.signInWithCredential(credential);
       },
 
       verificationFailed: (FirebaseAuthException e) {
-        Get.snackbar("Error", e.message ?? "OTP Failed");
         isLoading.value = false;
+        Get.snackbar("OTP Error", e.message ?? "Failed");
       },
 
       codeSent: (String verId, int? resendToken) {
         verificationId.value = verId;
         isLoading.value = false;
-        Get.toNamed('/otp');
+        Get.toNamed('/OtpVerificationScreen');
       },
 
       codeAutoRetrievalTimeout: (String verId) {
@@ -38,18 +37,25 @@ class AuthController extends GetxController {
   }
 
   // ================= VERIFY OTP =================
-  Future<void> verifyOtp(String otp) async {
+  Future<bool> verifyOtp(String otp) async {
     try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      isLoading.value = true;
+
+      PhoneAuthCredential credential =
+          PhoneAuthProvider.credential(
         verificationId: verificationId.value,
         smsCode: otp,
       );
 
-      await auth.signInWithCredential(credential);
-      Get.offAllNamed('/createpassword');
+      await _auth.signInWithCredential(credential);
+      return true;
 
     } catch (e) {
-      Get.snackbar("Error", "Invalid OTP");
+      Get.snackbar("Invalid OTP", "OTP galat hai");
+      return false;
+
+    } finally {
+      isLoading.value = false;
     }
   }
 }

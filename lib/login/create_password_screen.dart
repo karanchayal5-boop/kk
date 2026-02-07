@@ -71,31 +71,26 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                   height: 55,
                   child: ElevatedButton(
                     onPressed: () async {
-                      String p1 = pass1.text.trim();
-                      String p2 = pass2.text.trim();
-
-                      if (p1.isEmpty || p2.isEmpty) {
-                        Get.snackbar("Error", "Fill both fields");
+                      if (pass1.text.isEmpty || pass2.text.isEmpty) {
+                        Get.snackbar("Error", "Please fill both fields");
                         return;
                       }
 
-                      if (p1.length < 6) {
-                        Get.snackbar("Error", "Password must be at least 6 characters");
-                        return;
-                      }
-
-                      if (p1 != p2) {
+                      if (pass1.text != pass2.text) {
                         Get.snackbar("Error", "Passwords do not match");
                         return;
                       }
 
-                      await authController.registerUser(
-                        authController.currentUser!.displayName ?? "User",
-                        authController.currentUser!.email ?? "user@example.com",
-                        p1,
+                      try {
+                        await authController.createUser(
+                          password: pass1.text.trim(),
                         );
 
                       Get.offAllNamed('/login');
+
+                    } catch (e) {
+                        Get.snackbar("Error", "Failed to set password");
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A1A1A),
