@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -15,18 +16,28 @@ import 'package:kk/login/register_screen.dart';
 import 'dart:async';
 import 'package:kk/login/screen1.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-
+  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    await Firebase.initializeApp();
+    print("background message: ${message.messageId}");
+    
+  }
   void main() async {
     WidgetsFlutterBinding.ensureInitialized();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+    await requestNotificationPermission();
+    await getToken();
+    setupForegroundListener();
+    await setupNotification();
    
    
     Get.put(OtpController());
     Get.put(AuthController(), permanent: true);
 
 
-  WidgetsFlutterBinding.ensureInitialized();
+  
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   
@@ -48,6 +59,34 @@ import 'package:firebase_auth/firebase_auth.dart';
          ],
     ),
   );
+}
+
+
+
+Future<void> requestNotificationPermission() async {
+  await Permission.notification.request();
+}
+
+Future<void> setupNotification() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  print("User granted permission: ${settings.authorizationStatus}");
+}
+
+Future<void> getToken() async {
+  String? token = await FirebaseMessaging.instance.getToken();
+  print("Firebase Messaging Token: $token");
+}
+
+void setupForegroundListener() {
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("title: ${message.notification?.title}");
+    print("body: ${message.notification?.body}");
+  });
 }
 
 class SplashScreen extends StatefulWidget {

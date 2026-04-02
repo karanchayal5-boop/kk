@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kk/controller/taxi_controller.dart';
-import 'package:pay/pay.dart';
 
 class PaymentMethodPage extends StatelessWidget {
   PaymentMethodPage({super.key});
@@ -17,31 +16,31 @@ class PaymentMethodPage extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 12),
-          child: InkWell(
-            onTap: () => Get.back(),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
-                    blurRadius: 8,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-                size: 22,
-              ),
-            ),
+  padding: const EdgeInsets.only(left: 12),
+  child: InkWell(
+    onTap: () => Get.back(),
+    child: Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 8,
+            offset: Offset(0, 3),
           ),
-        ),
+        ],
+      ),
+      child: const Icon(
+        Icons.arrow_back,
+        color: Colors.black,
+        size: 22,
+      ),
+    ),
+  ),
+),
         title: const Text(
           "Payment method",
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -55,6 +54,7 @@ class PaymentMethodPage extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(20),
               children: [
+
                 Row(
                   children: const [
                     Icon(Icons.person, color: Colors.grey),
@@ -75,6 +75,7 @@ class PaymentMethodPage extends StatelessWidget {
 
                 const SizedBox(height: 25),
 
+                
                 Row(
                   children: const [
                     Icon(Icons.work, color: Colors.grey),
@@ -93,6 +94,7 @@ class PaymentMethodPage extends StatelessWidget {
 
                 const SizedBox(height: 25),
 
+               
                 Row(
                   children: const [
                     Icon(Icons.card_giftcard, color: Colors.grey),
@@ -108,24 +110,37 @@ class PaymentMethodPage extends StatelessWidget {
             ),
           ),
 
+          
           Padding(
-            padding: const EdgeInsets.all(70),
+            padding: const EdgeInsets.all(70
+            ),
             child: SizedBox(
               width: double.infinity,
               height: 55,
-              child: applePayButton([
-                PaymentItem(
-                  label: 'Total',
-                  amount: '10.00',
-                  status: PaymentItemStatus.final_price,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
                 ),
-              ]),
+                onPressed: () {
+                  Get.back();
+                },
+                child: const Text(
+                  "Save",
+                  style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
           ),
         ],
+        
       ),
     );
   }
+
+  
 
   Widget _cardTile(String text, int index, Color iconColor) {
     return Obx(() {
@@ -146,6 +161,8 @@ class PaymentMethodPage extends StatelessWidget {
     });
   }
 
+ 
+
   Widget _addTile(String title) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
@@ -154,23 +171,4 @@ class PaymentMethodPage extends StatelessWidget {
       onTap: () {},
     );
   }
-}
-
-Widget applePayButton(List<PaymentItem> _paymentItems) {
-  return ApplePayButton(
-    // Apple Pay ka ready-made button
-    paymentConfigurationAsset: 'apple_pay.json', // config file ka path
-    paymentItems: _paymentItems, // payment details
-    style: ApplePayButtonStyle.black, // button style
-    type: ApplePayButtonType.buy, // button text type
-    margin: const EdgeInsets.only(top: 10),
-
-    onPaymentResult: (result) {
-      print(result); // payment ka response yaha milega
-    },
-
-    loadingIndicator: const Center(
-      child: CircularProgressIndicator(), // jab load ho raha ho
-    ),
-  );
 }
