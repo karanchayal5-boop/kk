@@ -28,6 +28,7 @@ import 'package:permission_handler/permission_handler.dart';
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
     await requestNotificationPermission();
+    await FirebaseMessaging.instance.requestPermission();
     await getToken();
     setupForegroundListener();
     await setupNotification();
@@ -78,14 +79,20 @@ Future<void> setupNotification() async {
 }
 
 Future<void> getToken() async {
-  String? token = await FirebaseMessaging.instance.getToken();
-  print("Firebase Messaging Token: $token");
+  await Future.delayed( const Duration(seconds: 2));
+  String? token = await FirebaseMessaging.instance.getAPNSToken();
+  print("APNS Token: $token");
 }
 
 void setupForegroundListener() {
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print("title: ${message.notification?.title}");
     print("body: ${message.notification?.body}");
+
+    Get.snackbar(
+      message.notification?.title ?? "No Title",
+      message.notification?.body ?? "No Body",
+    );
   });
 }
 
@@ -93,6 +100,7 @@ class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SplashScreenState createState() => _SplashScreenState();
 }
 

@@ -8,6 +8,7 @@ class AuthController extends GetxController {
 
   var isLoading = false.obs;
   var tempEmail = "".obs;
+  RxString tempPhone = "".obs;  
 
   
 Future<void> createUser({required String password}) async {

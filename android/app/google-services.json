@@ -20,7 +20,15 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "238989467569-fqbjllq2o8r9i46601vkabmhmrl59hm8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kk.taxi.app"
+              }
+            }
+          ]
         }
       }
     }

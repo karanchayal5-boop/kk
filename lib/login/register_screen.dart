@@ -146,10 +146,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return;
                           }
  
-                          authController.tempEmail.value = emailCtrl.text.trim();
+                          authController.tempPhone.value = mobileNumber;
                           otpController.sendOtp(mobileNumber);
 
-                          Get.to(() => const OtpVerificationScreen());
+                          
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,

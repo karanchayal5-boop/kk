@@ -2,13 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>NSApplePayUsageDescription</key>
-    <string>This app uses Apple Pay for secure payments.</string>
-    <key>UIApplicationSceneManifest</key>
-    <dict>
-      <key>UIApplicationSupportsMultipleScenes</key>
-      <false/>
-    </dict>
+    <key>FireBaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -33,10 +28,17 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSApplePayUsageDescription</key>
+	<string>This app uses Apple Pay for secure payments.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs access to location to provide taxi services.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location to show your current position on the map.</string>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

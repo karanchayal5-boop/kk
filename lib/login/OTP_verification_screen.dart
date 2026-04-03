@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kk/controller/otp_controller.dart';
@@ -66,10 +68,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
-                const Text(
-                  'Lorem Ipsum is +91 90231487642 text of the printing.',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
+                Obx(() => Text(
+                  'OTP sent to ${authController.tempPhone.value}',
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                )),
                 const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,8 +87,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 SizedBox(
                   width: double.infinity,
                   height: 55,
-                  child: ElevatedButton(
-                    onPressed: () {
+                  child: Obx(() => ElevatedButton(
+                    onPressed: otpController.isLoading.value ? null : () async {
                       String enteredOtp = otpControllers.map((e) => e.text).join();
 
                       if (enteredOtp.length != 6) {
@@ -97,7 +99,20 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         return;
                       }
 
-                      
+                        
+                        bool isVerified = await otpController.verifyOtp(enteredOtp);
+                        if (isVerified) {
+                          Get.snackbar('Success', 'OTP verified successfully.',
+                              snackPosition: SnackPosition.TOP,
+                              backgroundColor: Colors.green,
+                              colorText: Colors.white);
+                        } else {
+                          Get.snackbar('Error', 'Invalid OTP. Please try again.',
+                              snackPosition: SnackPosition.TOP,
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white);
+                          return;
+                        }
                         Get.to(() => const CreatePasswordScreen());
                       
                     },
@@ -106,8 +121,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       elevation: 5,
                     ),
-                    child: const Text('Submit', style: TextStyle(color: Colors.white, fontSize: 18)),
-                  ),
+                    child: otpController.isLoading.value
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text('Submit', style: TextStyle(color: Colors.white, fontSize: 18)),
+                  )),
                 ),
                 const Spacer(),
                 Center(
@@ -116,7 +133,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       const Text("Didn't receive verification code?", style: TextStyle(color: Colors.black)),
                       TextButton(
                         onPressed: () {
-                          otpController.sendOtp(authController.tempEmail.value);
+                          otpController.sendOtp(authController.tempPhone.value);
                           
                           Get.snackbar(
                             "OTP Sent",

@@ -37,7 +37,7 @@ class _MyAppleMapState extends State<MyAppleMap> with SingleTickerProviderStateM
   BitmapDescriptor? destinationIcon;
 
   Set<Annotation> _annotations = {};
-  Set<Polyline> _polylines = {};
+  final Set<Polyline> _polylines = {};
   Set<Circle> _circles = {};
 
   StreamSubscription<Position>? _positionStream;
