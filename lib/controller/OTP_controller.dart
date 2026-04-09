@@ -17,6 +17,7 @@ class OtpController extends GetxController {
 
       verificationCompleted: (PhoneAuthCredential credential) async {
         await _auth.signInWithCredential(credential);
+        Get.snackbar("Success", "Phone number verified successfully.");
       },
 
       verificationFailed: (FirebaseAuthException e) {
@@ -51,7 +52,8 @@ class OtpController extends GetxController {
       return true;
 
     } catch (e) {
-      Get.snackbar("Invalid OTP", "OTP galat hai");
+      print("otp verification error: $e");
+      Get.snackbar("Invalid OTP", e.toString());
       return false;
 
     } finally {

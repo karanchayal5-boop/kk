@@ -149,6 +149,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           authController.tempPhone.value = mobileNumber;
                           otpController.sendOtp(mobileNumber);
 
+                          Get.to(() => const OtpVerificationScreen());
+
                           
                         },
                         style: ElevatedButton.styleFrom(

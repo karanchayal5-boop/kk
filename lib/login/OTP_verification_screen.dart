@@ -16,14 +16,14 @@ class OtpVerificationScreen extends StatefulWidget {
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final AuthController authController = Get.find<AuthController>();
   final OtpController otpController = Get.find<OtpController>();
-  final List<TextEditingController> otpControllers = 
-      List.generate(6, (_) => TextEditingController());
-      
+  final List<TextEditingController> otpControllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
 
   @override
   void initState() {
     super.initState();
-     
   }
 
   @override
@@ -53,7 +53,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   shape: BoxShape.circle,
                   boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
                 ),
-                child: const Icon(Icons.arrow_back_ios_new, size: 20, color: Colors.black),
+                child: const Icon(
+                  Icons.arrow_back_ios_new,
+                  size: 20,
+                  color: Colors.black,
+                ),
               ),
             ),
           ),
@@ -68,10 +72,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
-                Obx(() => Text(
-                  'OTP sent to ${authController.tempPhone.value}',
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
-                )),
+                Obx(
+                  () => Text(
+                    'OTP sent to ${authController.tempPhone.value.replaceRange(3, 8, '*****')}',
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                ),
                 const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -87,54 +93,85 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 SizedBox(
                   width: double.infinity,
                   height: 55,
-                  child: Obx(() => ElevatedButton(
-                    onPressed: otpController.isLoading.value ? null : () async {
-                      String enteredOtp = otpControllers.map((e) => e.text).join();
+                  child: Obx(
+                    () => ElevatedButton(
+                      onPressed: otpController.isLoading.value
+                          ? null
+                          : () async {
+                              try {
+                                String enteredOtp = otpControllers
+                                    .map((e) => e.text)
+                                    .join();
 
-                      if (enteredOtp.length != 6) {
-                        Get.snackbar('Error', 'Please enter the complete OTP.',
-                            snackPosition: SnackPosition.TOP,
-                            backgroundColor: Colors.red,
-                            colorText: Colors.white);
-                        return;
-                      }
+                                if (otpController.isLoading.value) {
+                                  return;
+                                }
 
-                        
-                        bool isVerified = await otpController.verifyOtp(enteredOtp);
-                        if (isVerified) {
-                          Get.snackbar('Success', 'OTP verified successfully.',
-                              snackPosition: SnackPosition.TOP,
-                              backgroundColor: Colors.green,
-                              colorText: Colors.white);
-                        } else {
-                          Get.snackbar('Error', 'Invalid OTP. Please try again.',
-                              snackPosition: SnackPosition.TOP,
-                              backgroundColor: Colors.red,
-                              colorText: Colors.white);
-                          return;
-                        }
-                        Get.to(() => const CreatePasswordScreen());
-                      
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1A1A1A),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      elevation: 5,
+                                if (enteredOtp.length != 6) {
+                                  Get.snackbar(
+                                    'Error',
+                                    'Please enter the complete OTP.',
+                                    snackPosition: SnackPosition.TOP,
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                  );
+                                  return;
+                                }
+
+                                bool isVerified = await otpController.verifyOtp(
+                                  enteredOtp,
+                                );
+                                if (isVerified) {
+                                  return;
+                                }
+                                Get.to(() => const CreatePasswordScreen());
+                              } catch (e) {
+                                print("button press error: $e");
+                              }
+                            },
+
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1A1A1A),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        elevation: 5,
+                      ),
+                      child: otpController.isLoading.value
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              'Submit',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
                     ),
-                    child: otpController.isLoading.value
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text('Submit', style: TextStyle(color: Colors.white, fontSize: 18)),
-                  )),
+                  ),
                 ),
                 const Spacer(),
                 Center(
                   child: Column(
                     children: [
-                      const Text("Didn't receive verification code?", style: TextStyle(color: Colors.black)),
+                      const Text(
+                        "Didn't receive verification code?",
+                        style: TextStyle(color: Colors.black),
+                      ),
                       TextButton(
                         onPressed: () {
                           otpController.sendOtp(authController.tempPhone.value);
-                          
+
+                          if (authController.tempPhone.value.isEmpty) {
+                            Get.snackbar(
+                              "Error",
+                              "Phone number is missing. Please go back and enter your phone number.",
+                              snackPosition: SnackPosition.TOP,
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white,
+                            );
+                            return;
+                          }
+
                           Get.snackbar(
                             "OTP Sent",
                             "OTP has been sent to your registered mobile number.",
@@ -146,9 +183,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         child: const Text(
                           'Resend Code.',
                           style: TextStyle(
-                              color: Colors.orange,
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.underline),
+                            color: Colors.orange,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                     ],
@@ -163,14 +201,24 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     );
   }
 
-  Widget _otpBox({required bool first, required bool last, required int index}) {
+  Widget _otpBox({
+    required bool first,
+    required bool last,
+    required int index,
+  }) {
     return Container(
       height: 60,
       width: 50,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 5))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: TextField(
         autofocus: true,
@@ -185,7 +233,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         keyboardType: TextInputType.number,
         maxLength: 1,
-        decoration: const InputDecoration(counterText: "", border: InputBorder.none),
+        decoration: const InputDecoration(
+          counterText: "",
+          border: InputBorder.none,
+        ),
       ),
     );
   }
