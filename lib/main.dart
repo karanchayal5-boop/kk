@@ -26,7 +26,7 @@ import 'package:permission_handler/permission_handler.dart';
   void main() async {
     WidgetsFlutterBinding.ensureInitialized();
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+    await Firebase.initializeApp();
     await requestNotificationPermission();
     await FirebaseMessaging.instance.requestPermission();
     await getToken();

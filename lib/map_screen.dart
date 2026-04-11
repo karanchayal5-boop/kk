@@ -1,67 +1,47 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:apple_maps_flutter/apple_maps_flutter.dart';
-import 'package:get/get.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:kk/controller/taxi_controller.dart';
-import 'package:kk/home/driver_arriving_sheet.dart';
+import 'dart:async'; // async ka use future/stream ke liye hota hai
+import 'package:flutter/material.dart'; // UI banane ke liye
+import 'package:apple_maps_flutter/apple_maps_flutter.dart'; // Apple map
+import 'package:get/get.dart'; // state management
+import 'package:kk/controller/taxi_controller.dart'; // controller
+import 'package:kk/home/driver_arriving_sheet.dart'; // UI screens
 import 'package:kk/home/finding_driver_sheet.dart';
 import 'package:kk/home/initial_search_sheet.dart';
 import 'package:kk/home/notes_for_driver_sheet.dart';
 import 'package:kk/home/vehicle_selection_sheet.dart';
 import 'package:kk/home/custom_menu_button.dart';
 import 'package:kk/menu/side_menu_page.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/firebase_database.dart'; // firebase
 
 class MyAppleMap extends StatefulWidget {
-  const MyAppleMap({super.key});
+  const MyAppleMap({super.key}); // constructor
 
   @override
-  State<MyAppleMap> createState() => _MyAppleMapState();
+  State<MyAppleMap> createState() => _MyAppleMapState(); // state create
 }
 
-class _MyAppleMapState extends State<MyAppleMap> with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final TaxiController taxiController = Get.put(TaxiController());
-  DatabaseReference? driverRef;
-  StreamSubscription<DatabaseEvent>? driverListener;
+class _MyAppleMapState extends State<MyAppleMap>
+    with SingleTickerProviderStateMixin {
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(); // drawer control
 
-  AppleMapController? mapController;
+  final TaxiController taxiController = Get.put(TaxiController()); // controller init
 
-  LatLng _currentLocation = const LatLng(30.4033, 74.0203);
+  DatabaseReference? driverRef; // firebase reference
+  StreamSubscription<DatabaseEvent>? driverListener; // listener
 
-  BitmapDescriptor? userIcon;
-  BitmapDescriptor? taxiIcon;
-  BitmapDescriptor? sourceIcon;
-  BitmapDescriptor? destinationIcon;
+  AppleMapController? mapController; // map controller
 
-  Set<Annotation> _annotations = {};
-  final Set<Polyline> _polylines = {};
-  Set<Circle> _circles = {};
+  // 👉 FIXED LOCATION (manual set kiya)
+  LatLng _currentLocation = const LatLng(30.4033, 74.0203); // default location
 
-  StreamSubscription<Position>? _positionStream;
+  BitmapDescriptor? userIcon; // user icon
+  BitmapDescriptor? taxiIcon; // taxi icon
 
-  late AnimationController _blinkController;
-  late Animation<double> _opacityAnimation;
+  Set<Annotation> _annotations = {}; // markers
+  final Set<Polyline> _polylines = {}; // route lines
 
-
-  void _updateDriverMarker(LatLng driverPos) {
-  setState(() {
-    _annotations.removeWhere(
-      (a) => a.annotationId.value == "taxi1",
-    );
-
-    _annotations.add(
-      Annotation(
-        annotationId: AnnotationId("taxi1"),
-        position: driverPos,
-        icon: taxiIcon ?? BitmapDescriptor.defaultAnnotation,
-      ),
-    );
-  });
-}
-
+  late AnimationController _blinkController; // animation
+// opacity animation
 
   @override
   void initState() {
@@ -69,43 +49,56 @@ class _MyAppleMapState extends State<MyAppleMap> with SingleTickerProviderStateM
 
     _blinkController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    )..repeat(reverse: true);
+      duration: const Duration(milliseconds: 1000), // blink speed
+    )..repeat(reverse: true); // animation loop
 
-    _opacityAnimation = Tween<double>(begin: 0.2, end: 0.6).animate(_blinkController)
-      ..addListener(() {
-        _updateTaxiCircles();
-      });
+// opacity change
 
-    _initMapData();
-    driverRef =
-    FirebaseDatabase.instance.ref("driversLocation/driver_1");
+    _initMapData(); // icons load
 
-driverListener = driverRef!.onValue.listen((event) {
-  if (event.snapshot.value != null) {
-    final data = event.snapshot.value as Map;
+    // 👉 Firebase driver location listen
+    driverRef = FirebaseDatabase.instance.ref("driversLocation/driver_1");
 
-    LatLng driverPos = LatLng(
-      data["lat"],
-      data["lng"],
-    );
+    driverListener = driverRef!.onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        final data = event.snapshot.value as Map;
 
-    _updateDriverMarker(driverPos);
+        LatLng driverPos = LatLng(
+          data["lat"], // latitude
+          data["lng"], // longitude
+        );
+
+        _updateDriverMarker(driverPos); // marker update
+      }
+    });
+
+    _updateMarkers(); // initial marker set
   }
-});
-    
-  }
-  
-
 
   @override
   void dispose() {
-    driverListener?.cancel();
-    _positionStream?.cancel();
-    _blinkController.dispose();
+    driverListener?.cancel(); // listener stop
+    _blinkController.dispose(); // animation stop
     super.dispose();
   }
 
+  // 👉 Driver marker update
+  void _updateDriverMarker(LatLng driverPos) {
+    setState(() {
+      _annotations.removeWhere(
+          (a) => a.annotationId.value == "taxi1"); // old remove
+
+      _annotations.add(
+        Annotation(
+          annotationId: AnnotationId("taxi1"), // id
+          position: driverPos, // position
+          icon: taxiIcon ?? BitmapDescriptor.defaultAnnotation,
+        ),
+      );
+    });
+  }
+
+  // 👉 Icons load
   Future<void> _initMapData() async {
     userIcon = await BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(size: Size(40, 40)),
@@ -116,210 +109,106 @@ driverListener = driverRef!.onValue.listen((event) {
       const ImageConfiguration(size: Size(35, 35)),
       'assets/images/car_group.png',
     );
-
-    sourceIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(20, 20)),
-      'assets/images/Group 36@3x.png',
-    );
-
-    destinationIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(20, 20)),
-      'assets/images/Group 37@3x.png',
-    );
-
-    _checkPermissionsAndStartTracking();
   }
 
-  Future<void> _checkPermissionsAndStartTracking() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) return;
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) return;
-    }
-
-    Position position = await Geolocator.getCurrentPosition();
-    _updateLocation(LatLng(position.latitude, position.longitude));
-
-    const LocationSettings locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 5,
-    );
-
-    _positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
-      _updateLocation(LatLng(position.latitude, position.longitude));
-    });
-  }
-
-  void _updateLocation(LatLng pos) {
-    setState(() {
-      _currentLocation = pos;
-      _updateMarkers();
-    });
-
-    mapController?.animateCamera(CameraUpdate.newLatLng(pos));
-  }
-
+  // 👉 User marker set (fixed location)
   void _updateMarkers() {
     _annotations = {
       Annotation(
-        annotationId:    AnnotationId("user"),
-        position: _currentLocation,
+        annotationId: AnnotationId("user"),
+        position: _currentLocation, // fixed position
         icon: userIcon ?? BitmapDescriptor.defaultAnnotation,
         infoWindow: const InfoWindow(title: "You are here"),
       ),
     };
   }
-  
-  void _updateTaxiCircles() {
-    if (taxiController.isDestinationSelected.value) {
-      _circles = {};
-      return;
-    }
 
-    _circles = {
-      Circle(
-        circleId:  CircleId("blink1"),
-        center: LatLng(_currentLocation.latitude + 0.002, _currentLocation.longitude + 0.002),
-        radius: 18,
-        fillColor: Colors.orange.withOpacity(_opacityAnimation.value),
-        strokeWidth: 0,
-      ),
-    };
-  }
-
- 
-  void calculateDistanceAndTime(LatLng start, LatLng end) {
-    double meters = Geolocator.distanceBetween(
-      start.latitude,
-      start.longitude,
-      end.latitude,
-      end.longitude,
-    );
-
-    double km = meters / 1000;
-    double avgSpeedKmPerHr = 35;
-
-    double timeInHours = km / avgSpeedKmPerHr;
-    int minutes = (timeInHours * 60).round();
-
-    taxiController.estimatedTimeMin.value = minutes;
-    taxiController.estimatedDistanceKm.value = double.parse(km.toStringAsFixed(2));
-  }
-
-  // =========================
-  // ✅ DRAW ROUTE
-  // =========================
+  // 👉 Route draw (simple line)
   void drawOrangeRoute(LatLng start, LatLng end) {
-    calculateDistanceAndTime(start, end);
-
     setState(() {
       _polylines.clear();
 
       _polylines.add(
         Polyline(
-          polylineId:  PolylineId("route"),
-          points: [start, end],
+          polylineId: PolylineId("route"),
+          points: [start, end], // start to end line
           color: Colors.orange,
           width: 5,
         ),
       );
-
-      _annotations.addAll({
-        Annotation(
-          annotationId:  AnnotationId("source"),
-          position: start,
-          icon: sourceIcon ?? BitmapDescriptor.defaultAnnotation,
-        ),
-        Annotation(
-          annotationId:   AnnotationId("destination"),
-          position: end,
-          icon: destinationIcon ?? BitmapDescriptor.defaultAnnotation,
-        ),
-      });
     });
-
-    LatLngBounds bounds = LatLngBounds(
-      southwest: LatLng(
-        start.latitude < end.latitude ? start.latitude : end.latitude,
-        start.longitude < end.longitude ? start.longitude : end.longitude,
-      ),
-      northeast: LatLng(
-        start.latitude > end.latitude ? start.latitude : end.latitude,
-        start.longitude > end.longitude ? start.longitude : end.longitude,
-      ),
-    );
-
-    mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 80));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      resizeToAvoidBottomInset: false,
-      drawer: const Drawer(child: Center(child: Text("Menu"))),
       body: Stack(
         children: [
           Positioned.fill(
             child: AppleMap(
-              onMapCreated: (controller) => mapController = controller,
-              initialCameraPosition: CameraPosition(target: _currentLocation, zoom: 15),
-              annotations: _annotations,
-              polylines: _polylines,
-            circles: _circles,
-          ),),
+              onMapCreated: (controller) =>
+                  mapController = controller, // map init
 
-          // ROUTE AUTO DRAW
+              initialCameraPosition: CameraPosition(
+                target: _currentLocation, // fixed location
+                zoom: 15,
+              ),
+
+              annotations: _annotations, // markers
+              polylines: _polylines, // route
+            ),
+          ),
+
+          // 👉 Route auto draw
           Obx(() {
             if (taxiController.isDestinationSelected.value) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                drawOrangeRoute(_currentLocation, taxiController.destinationLatLng.value);
+                drawOrangeRoute(
+                  _currentLocation,
+                  taxiController.destinationLatLng.value,
+                );
               });
             }
-            return const SizedBox.shrink();
+            return const SizedBox();
           }),
 
-          
+          // 👉 Bottom sheets logic
           Obx(() {
             if (!taxiController.isDestinationSelected.value) {
-            return const InitialSearchSheet();
+              return const InitialSearchSheet();
+            } else if (taxiController.currentStep.value == 0) {
+              return VehicleSelectionSheet();
+            } else if (taxiController.currentStep.value == 1) {
+              return NotesForDriverSheet();
+            } else if (taxiController.currentStep.value == 2) {
+              return FindingDriverSheet();
+            } else {
+              return const DriverArrivingSheet();
             }
-                if (taxiController.currentStep.value == 0) {
-                 return VehicleSelectionSheet();
-             } else if (taxiController.currentStep.value == 1) {
-                 return NotesForDriverSheet();
-             } else if (taxiController.currentStep.value == 2) {
-                 return FindingDriverSheet();
-             } else {
-                 return const DriverArrivingSheet();
-             }
-             }),
+          }),
 
-
+          // 👉 Menu button
           CustomMenuButton(
             onTap: () {
               Get.generalDialog(
-               pageBuilder: (context, a1, a2) => const SideMenuPage(),
-               barrierDismissible: true,
-               barrierLabel: "Menu",
-               barrierColor: Colors.transparent, // 👈 IMPORTANT
-               transitionDuration: const Duration(milliseconds: 300),
-               transitionBuilder: (context, anim, secAnim, child) {
-             return SlideTransition(
-               position: Tween<Offset>(
-               begin: const Offset(-1, 0),
-               end: Offset.zero,
-               ).animate(anim),
-                child: child,
+                pageBuilder: (context, a1, a2) => const SideMenuPage(),
+                barrierDismissible: true,
+                barrierLabel: "Menu",
+                barrierColor: Colors.transparent,
+                transitionDuration: const Duration(milliseconds: 300),
+                transitionBuilder: (context, anim, secAnim, child) {
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(-1, 0),
+                      end: Offset.zero,
+                    ).animate(anim),
+                    child: child,
                   );
                 },
               );
             },
           ),
-          
         ],
       ),
     );

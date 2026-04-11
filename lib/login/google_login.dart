@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+import 'package:get/instance_manager.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:kk/map_screen.dart';
 
 Future<void> signInWithGoogle() async {
   try {
@@ -25,6 +28,8 @@ Future<void> signInWithGoogle() async {
     // Firebase login
 
     print("✅ Login Success: ${userCredential.user?.email}");
+
+    Get.offAll(() => MyAppleMap());
 
   } catch (e) {
     print("🔥 Google Login Error: $e");
