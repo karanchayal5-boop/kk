@@ -32,7 +32,7 @@ class _MyAppleMapState extends State<MyAppleMap>
   AppleMapController? mapController; // map controller
 
   // 👉 FIXED LOCATION (manual set kiya)
-  LatLng _currentLocation = const LatLng(30.4033, 74.0203); // default location
+  final LatLng _currentLocation = const LatLng(30.4033, 74.0203); // default location
 
   BitmapDescriptor? userIcon; // user icon
   BitmapDescriptor? taxiIcon; // taxi icon

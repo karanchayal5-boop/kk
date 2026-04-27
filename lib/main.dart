@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:kk/controller/otp_controller.dart';
 import 'package:kk/controller/auth_controller.dart';
-import 'package:kk/firebase_options.dart';
 import 'package:kk/home/payment_method_page.dart';
 import 'package:kk/login/OTP_verification_screen.dart';
 import 'package:kk/login/create_password_screen.dart';
