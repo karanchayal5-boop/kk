@@ -12,6 +12,7 @@ This documentation helps beginners understand how to use Git in real projects.
 🔹 Step 1: Clone Repository
 
 git clone <repo-url>
+
 Description:
 Downloads the project from a remote repository to your local machine.
 
