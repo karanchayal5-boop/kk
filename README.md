@@ -7,6 +7,24 @@ A new Flutter project.
 A simple and clean guide to the most commonly used Git commands.
 This documentation helps beginners understand how to use Git in real projects.
 
+📘 Setup After Cloning Repository
+🔹 Step 1: Clone Repository
+git clone <repo-url>
+Description:
+Downloads the project from a remote repository to your local machine.
+
+🔹 Step 2: Go to Project Folder
+cd project-folder-name
+Description:
+Navigates into the cloned project directory.
+
+🔹 Step 3: Install Dependencies
+👉 For Flutter:
+
+flutter pub get
+Description:
+Installs all required packages and dependencies listed in pubspec.yaml.
+
 🔹 git init
 
 📸 Screenshot:
