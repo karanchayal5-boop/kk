@@ -16,14 +16,8 @@ git clone <repo-url>
 Description:
 Downloads the project from a remote repository to your local machine.
 
-🔹 Step 2: Go to Project Folder
 
-cd project-folder-name
-
-Description:
-Navigates into the cloned project directory.
-
-🔹 Step 3: Install Dependencies
+🔹 Step 2: Install Dependencies
 
 👉 For Flutter:
 
