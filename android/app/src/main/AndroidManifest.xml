@@ -1,4 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- 📍 precise location (GPS) -->
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<!-- Hinglish: ye exact location (GPS) ke liye hai -->
+
+<!-- 📍 approx location -->
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<!-- Hinglish: ye approximate location ke liye hai -->
+<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+<!-- Hinglish: app background me bhi location use kare -->
+    
     <application
         android:label="kk"
         android:name="${applicationName}"

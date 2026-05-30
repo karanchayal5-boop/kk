@@ -1,0 +1,37 @@
+{
+  "project_info": {
+    "project_number": "238989467569",
+    "project_id": "kk-taxi-app-68f42",
+    "storage_bucket": "kk-taxi-app-68f42.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238989467569:android:671b55d67a9bfad07e6790",
+        "android_client_info": {
+          "package_name": "com.example.kk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrxipTB2MNyzHfmJoJzfauEbEaDk_0NH8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "238989467569-fqbjllq2o8r9i46601vkabmhmrl59hm8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kk.taxi.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

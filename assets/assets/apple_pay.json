@@ -1,0 +1,11 @@
+{
+  "provider": "apple_pay",
+  "data": {
+    "merchantIdentifier": "merchant.com.karan.test",
+    "displayName": "Karan Taxi App",
+    "merchantCapabilities": ["3DS", "debit", "credit"],
+    "supportedNetworks": ["visa", "masterCard"],
+    "countryCode": "IN",
+    "currencyCode": "INR"
+  }
+}

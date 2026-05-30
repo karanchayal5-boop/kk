@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kk/controller/auth_controller.dart';
 
 class CreatePasswordScreen extends StatefulWidget {
   const CreatePasswordScreen({super.key});
@@ -9,89 +10,118 @@ class CreatePasswordScreen extends StatefulWidget {
 }
 
 class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
-  
+  final AuthController authController = Get.find<AuthController>();
+
+  TextEditingController pass1 = TextEditingController();
+  TextEditingController pass2 = TextEditingController();
+
   bool _isObscure1 = true;
   bool _isObscure2 = true;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
-      body: Stack(
-        children: [
-          
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Image.asset(
-              'assets/images/login.png', 
-              height: 120,
-              fit: BoxFit.contain,
+    return Padding(
+      padding: const EdgeInsets.all(0.0),
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF8F8F8),
+        body: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Image.asset(
+                'assets/images/login.png',
+                height: 120,
+              ),
             ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 200),
-                
-                
-                const Text(
-                  'Create password',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
-                const SizedBox(height: 40),
-
-                
-                _buildPasswordField('Enter password', _isObscure1, () {
-                  setState(() => _isObscure1 = !_isObscure1);
-                }),
-                const SizedBox(height: 20),
-                _buildPasswordField('Confirm password', _isObscure2, () {
-                  setState(() => _isObscure2 = !_isObscure2);
-                }),
-
-                const SizedBox(height: 40),
-
-                
-                SizedBox(
-                  width: double.infinity,
-                  height: 55,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      
-                      Get.toNamed('/home'); 
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1A1A1A),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+      
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 200),
+      
+                  const Text(
+                    'Create password',
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+      
+                  const SizedBox(height: 40),
+      
+                  _buildPasswordField(
+                    'Enter password',
+                    pass1,
+                    _isObscure1,
+                    () => setState(() => _isObscure1 = !_isObscure1),
+                  ),
+      
+                  const SizedBox(height: 20),
+      
+                  _buildPasswordField(
+                    'Confirm password',
+                    pass2,
+                    _isObscure2,
+                    () => setState(() => _isObscure2 = !_isObscure2),
+                  ),
+      
+                  const SizedBox(height: 40),
+      
+                  SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (pass1.text.isEmpty || pass2.text.isEmpty) {
+                          Get.snackbar("Error", "Please fill both fields");
+                          return;
+                        }
+      
+                        if (pass1.text != pass2.text) {
+                          Get.snackbar("Error", "Passwords do not match");
+                          return;
+                        }
+      
+                        try {
+                          await authController.linkEmailPassword(
+                            authController.tempEmail.value, // OTP screen se email mil raha hai
+                            pass1.text
+                          );
+      
+                        Get.offAllNamed('/login');
+      
+                      } catch (e) {
+                          Get.snackbar("Error", "Failed to set password");
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1A1A1A),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
-                      elevation: 4,
-                    ),
-                    child: const Text(
-                      'Next',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      child: const Text(
+                        'Next',
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  
-  Widget _buildPasswordField(String hint, bool isObscure, VoidCallback toggle) {
+  Widget _buildPasswordField(
+    String hint,
+    TextEditingController controller,
+    bool isObscure,
+    VoidCallback toggle,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -100,23 +130,18 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
-            offset: const Offset(0, 5),
           ),
         ],
       ),
       child: TextField(
-        obscureText: isObscure, 
+        controller: controller,
+        obscureText: isObscure,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: const TextStyle(color: Colors.grey),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          
           suffixIcon: IconButton(
-            icon: Icon(
-              isObscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-              color: Colors.grey,
-            ),
+            icon: Icon(isObscure ? Icons.visibility_off : Icons.visibility),
             onPressed: toggle,
           ),
         ),
